@@ -1,3 +1,3 @@
-## Install requirements.txt\n
-open up a command line and type:\n
+## Install requirements.txt
+open up a command line and type:
 ```pip install -r requirements.txt```
