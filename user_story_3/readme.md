@@ -8,7 +8,7 @@ Meest gekocht
 | TICT-AI-V1A |
 | 1778287 |
 
-![]()
+![](src/Picture8.png)
 
 Als we de tabel van de **O**rders zouden zien als een verzameling, dan geldt het volgende:
 Elke mogelijke verzameling **C**ategorie van producten met categorie x is een subset van alle orders.
@@ -22,7 +22,7 @@ group by category
 order by category;
 ```
 
-![]()
+![](src/Picture9.png)
 
 Bij het kijken naar de distributie van voorkomende categorieën in de verzameling orders valt op dat niet van elke mogelijke categorie producten zijn gekocht. 
 Dit houdt in dat bij het opvragen, later, van producten bij een productpage waar geen producten van zijn gekocht, geen recommendations getoond zullen worden.
@@ -40,7 +40,7 @@ Meest_gekocht hoort bij meer producten.
 
 Hierbij hoort het volgende logistiek datamodel:
 
-![]()
+![](src/Picture10.png)
 
 ### DDL script voor meest_gekocht
 
@@ -121,11 +121,11 @@ END $$;
 
 ### ERD en meest_gekocht tabel na het uitvoeren van DDL
 
-![]()
+![](src/Picture11.png)
 
 Alle attributen (categorie, 4 FK's) zijn tot kolommen gemaakt.
 
-![]()
+![](src/Picture12.png)
 
 ## Verbinden van tabel met fron-end
 
@@ -214,12 +214,12 @@ def get(self, profileid, count, type_rec, pagecat):
 Bij het draaien van de front-end en het klikken op Gezond & verzorging, krijg je onderstaande scherm. 
 De producten die het meest zijn gekocht in deze categorie worden bij ‘Anderen kochten ook’ weergegeven.
 
-![]()
+![](src/Picture13.png)
 
 ### Huishouden
 
-![]()
+![](src/Picture14.png)
 
 ### Wonen & vrije tijd
 
-![]()
+![](src/Picture15.png)
