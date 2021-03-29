@@ -9,6 +9,15 @@ PostgreSQL
 | 1779750 – Robin Kroesen |
 | 1789287 – Khai-Tam Nguyen |
 
+Voor het opzetten van de database zijn de volgende files nodig:
+- rdbconnection2.py
+- mdbconnection2.py
+- createTables.py
+- DataOverzetten2.py
+
+Zorg dat alle files in één map staan. Om de tabellen aan te maken en de relaties tussen de tabellen op te zetten, run je eerst createTables.py. 
+Hierna run je DataOverzetten2.py waarmee de tabellen gevuld worden met de data uit mongo.
+
 # Relaties
 
 _Profile – BUIDS_
