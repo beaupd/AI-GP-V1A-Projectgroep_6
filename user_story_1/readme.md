@@ -43,7 +43,7 @@ Een order kan 0, 1 of meer producten bevatten.
 
 # Logistiek datamodel
 
-![](RackMultipart20210329-4-b70rj4_html_47220ad94eb547c3.png)
+![](src/Picture1.png)
 
 # DDL Script
 
@@ -288,24 +288,24 @@ zijn de volgende tabellen opgehaald:
 
 ### Product
 
-![](RackMultipart20210329-4-b70rj4_html_669c731e4c37d655.png)
+![](src/Picture2.png)
 
 ### Profile
 
-![](RackMultipart20210329-4-b70rj4_html_984745849529108f.png)
+![](src/Picture3.png)
 
 ### Buids
 
-![](RackMultipart20210329-4-b70rj4_html_cbfc406a877ab8f4.png)
+![](src/Picture4.png)
 
 ### Session
 
-![](RackMultipart20210329-4-b70rj4_html_8137e09b3898831a.png)
+![](src/Picture5.png)
 
 ### Orders
 
-![](RackMultipart20210329-4-b70rj4_html_f70922c48319efe4.png)
+![](src/Picture6.png)
 
 ### Events
 
-![](RackMultipart20210329-4-b70rj4_html_c5ce6234e263e6cb.png)
+![](src/Picture7.png)
