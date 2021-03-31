@@ -68,9 +68,10 @@ class Pactum:
         self.conn.commit()
         cur.close()
 
-with face.InterfaceDB() as conn:
-    p = Pactum(conn)
-    # p.create_table()
-    # p.populate_table()
-    res = p.get_n_recommended("01001-jetblack", 3)
-    print(res)
+if __name__ == "__main__":
+    with face.InterfaceDB() as conn:
+        p = Pactum(conn)
+        # p.create_table()
+        # p.populate_table()
+        res = p.get_n_recommended("01001-jetblack", 3)
+        print(res)
