@@ -22,7 +22,13 @@ Gekijkt in de product tabel welke producten met meerdere specificaties overeenko
 De engine bestaat uit een klasse die gebruik maakt van data uit de bij eerdere user-stories opgestelde relationele database. het belangrijkste gedeelte van de klasse is opgezet in drie functies: een functie die de tabel voor de recommendation engine aanmaakt, een functie die de aangemaakte tabel vult met data uit de product tabel en een functie die met een gegeven product-id onder andere een lijst terug geeft van alle product-id's uit de arrays waar het gegeven product-id in voorkomt uit de gevulde tabel.
 
 ### _Hoe is de code opgezet_
-De similar engine recommendatie code bestaat uit een klasse waaraan je een open connectie meegeeft met de relationele database(postgresql). Vervolgens is er deze functie: 
+De similar engine recommendatie code bestaat uit een klasse waaraan je een open connectie meegeeft met de relationele database(postgresql). Er zijn eigenlijk 2 functies die andere functies in de klasse aanroepen. De eerste om de recommendation werking te initialiseren en de tweede om "n" aantal producten te returnen die "similar" zijn aan het meegegeven produt-id. De eerste functie "setup_recommendation" callt 2 functies en ziet er als volgt uit;
+```python
+def setup_recommendation(self):
+        self.create_table()
+        self.populate_table()
+```
+De eerste functie die gecalled word is deze:
 ```python
 def create_table(self):
         cur = self.conn.cursor()
@@ -38,3 +44,30 @@ def create_table(self):
         self.conn.commit()
         cur.close()
 ```
+Deze functie maakt met de meegegeven connection, die geinitialiseerd is als een object variable, een cursor aan en execute daarmee op de postgresql de code om de tabel aan te maken. De tweede functie die hieruit word gecalled is als volgt:
+```python
+def populate_table(self):
+        values = ["product_id", "brand", "gender", "category", "sub_category", "sub_sub_category"]
+        cur = self.conn.cursor()
+        cur.execute(f"SELECT {', '.join(values)} from product")
+        rows = cur.fetchall()
+        
+        print(f"Found {len(rows)} rows, inserting...")
+        start_all = perf_counter()
+        for idx, r in enumerate(rows): # loop door alle opgevraagde rows
+            for i, c in enumerate(r[1:], 1): # loop door alle columns behalve de eerste want het id gebruiken we in de niewe tabel als identificator
+                if c:# als de column niet leeg is
+                    p = str(c).replace("'", "") # sommige columns hebben quote er in en dat geeft een error
+                    p_id = r[0].replace("'", "") # sommige columns hebben quote er in en dat geeft een error
+                    # hieronder de sql insert code om een row aan te maken of van een row met dezelfde "value" de array aan te passen(append) 
+                    cur.execute(f"INSERT INTO equals(keyfield, value, products, length) VALUES ('{values[i]}', '{p}', ARRAY['{p_id}'], 1) ON CONFLICT (value) DO UPDATE SET products = array_append((SELECT products from equals where value='{p}'), '{p_id}'), length = array_length(array_append((SELECT products from equals where value='{p}'), '{p_id}'), 1);")
+            if idx % 1000 == 0 and idx != 0: # x aantal executes committen vooral om efficientie te testen en om een coole tussentijdse tijden te berekenen
+                temp = perf_counter()
+                print(f"On row {idx}, current time is {temp - start_all}s estimated time is {((temp-start_all)/idx)*len(rows)}s\ncommiting...")
+                self.conn.commit()
+        self.conn.commit()
+        eind_whole = perf_counter()
+        print(f"Done, total took {eind_whole - start_all} seconds...")
+        cur.close()
+```
+Deze functie vraagt met de meegegeven connectie en een aantal bedachte specificaties in een lijst de waardes op van alle waardes van de producten bij de in de lijst voorkomende specificaties, vervolgens word er een moment opname gedaan om uiteindelijk de totale tijd te kunnen berekenen, daarna loopt de functie door alle gevonden rows en loopt die per row weer door alle columns(de specificaties), al de gevonden waardes van de specificaties van de producten stopt de functie in de nieuwe tabel in de array met diezelfde specificatie waarde. Per 1000 rows vind er een commit plaats, een berekening van de tijd en een schatting van de totale tijd. Op het einde is er nog een commit naar de database en een print van de totale tijd.
