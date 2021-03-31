@@ -35,7 +35,7 @@ def profiels():
     profile_var = []
     buids_var = []
     for element in mdbcur["profiles"].find():
-        temp =[
+        temp = [
             element[key]
             if not isinstance(element[key], dict) # ervan uitgaande dat er maar één dict in voorkomt
             else get_subvalue(element[key], ["segment", "viewed_before"]) # neem de values van de sub_keys
