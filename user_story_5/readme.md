@@ -14,7 +14,7 @@ TAAI-V1GP-19_2020
 - [Algoritme popular](#algoritme-1-popular)
 - [Algoritme combination](#algoritme-2-combination)
 - [Algoritme personal](#algoritme-3-personal)
-- [Algoritme similar](#algoritme-4-similar)advies
+- [Algoritme similar](#algoritme-4-similar)
 - [Advies](#advies)
 
 # Inleiding
