@@ -98,7 +98,8 @@ class Recom(Resource):
             prodids = ReturnSelectExecution(popular_query, (user_segment, user_gender, cat,))
             
         elif type_rec == "similar":
-            prodids = [p[0] for p in pactum.get_n_recommended(profileid, count)]
+            pact = pactum.Pactum(connectionRDB)
+            prodids = [p[0] for p in pact.get_n_recommended(profileid, count)]
 
         elif type_rec == "combination":
             mogelijke_genders = ['Man', 'Vrouw']
