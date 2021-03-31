@@ -8,14 +8,18 @@ class Pactum:
     def __init__(self, conn):
         self.conn = conn
 
+    def get_n_recommended(self, product_id, n):
+        return self.recommend_products(product_id)["occurences"].most_common(n)
+
     def recommend_products(self, product_id):
         cur = self.conn.cursor()
         cur.execute(f"SELECT * FROM equals WHERE '{product_id}'=ANY(products)") # kijken waar de gegeven product_id voorkomt in de array
         rows = cur.fetchall()
         if not rows:
             return None
-        rows.sort(key = lambda rows: rows[-1]) # soorteren op groote array zodat we de kleinste kunnen pakken dit is meestal het meest overeenkomig qua eigenschappen.
-        found_list = list(filter(lambda p: p != product_id, rows[0][2]))# lijst van alle gevonden producten met het gegeven product id eruit gefilterd
+        # print([item for sublist in [c[2] for c in rows] for item in sublist])
+        # rows.sort(key = lambda rows: rows[-1]) # soorteren op groote array zodat we de kleinste kunnen pakken dit is meestal het meest overeenkomig qua eigenschappen.
+        found_list = list(filter(lambda p: p != product_id, [item for sublist in [c[2] for c in rows] for item in sublist]))# lijst van alle gevonden producten met het gegeven product id eruit gefilterd
         res = {
             "length": len(found_list),
             "products": found_list,
@@ -24,7 +28,7 @@ class Pactum:
         return res
 
     def populate_table(self):
-        values = ["product_id", "brand", "category", "sub_category", "sub_sub_category"]
+        values = ["product_id", "brand", "gender", "category", "sub_category", "sub_sub_category"]
         cur = self.conn.cursor()
         cur.execute(f"SELECT {', '.join(values)} from product")
         rows = cur.fetchall()
@@ -65,72 +69,5 @@ with face.InterfaceDB() as conn:
     p = Pactum(conn)
     # p.create_table()
     # p.populate_table()
-    print(p.recommend_products("01001-chalkwhite"))
-
-
-# with face.InterfaceDB() as conn:
-#     with face.InterfaceDDB() as DDBconn:
-#         data_in.insertData(DDBconn, conn, data_in.config_products)
-
-
-# createTableQuery = """
-#     DROP TABLE IF EXISTS Profile CASCADE;
-#     DROP TABLE IF EXISTS BUIDS CASCADE;
-#     DROP TABLE IF EXISTS Sessions CASCADE;
-#     DROP TABLE IF EXISTS Product CASCADE;
-#     DROP TABLE IF EXISTS Orders CASCADE;
-#     DROP TABLE IF EXISTS Events CASCADE;
-
-#     CREATE TABLE Profile (
-#     profile_id varchar(255) PRIMARY KEY,
-#     previously_recommended varchar(255)[],
-#     viewed_before varchar(255)[],
-#     segment VARCHAR(50)
-#     );
-#     CREATE TABLE BUIDS (
-#         browser_id varchar(255) PRIMARY KEY,
-#         profile_id varchar(255),
-#         FOREIGN KEY (profile_id)
-#             REFERENCES Profile (profile_id)
-#     );
-#     CREATE TABLE Product (
-#         product_id varchar(255) NOT NULL,
-#         naam varchar(255),
-#         brand varchar(255),
-#         gender varchar(255),
-#         category varchar(255),
-#         sub_category varchar(255),
-#         sub_sub_category varchar(255),
-#         PRIMARY KEY (product_id) 
-#     );
-#     CREATE TABLE Sessions (
-#         session_id varchar(255) PRIMARY KEY,
-#         browser_id varchar(255),
-#         FOREIGN KEY (browser_id)
-#             REFERENCES BUIDS (browser_id)
-#     );
-#     CREATE TABLE Orders (
-#         session_id varchar(255),
-#         product_id varchar(255),
-#         FOREIGN KEY (session_id)
-#             REFERENCES Sessions (session_id),
-#         FOREIGN KEY (product_id)
-#             REFERENCES Product (product_id)
-#     );
-#     CREATE TABLE Events (
-#         product_id varchar(255) NOT NULL,
-#         session_id varchar(255) NOT NULL,
-#         FOREIGN KEY (product_id)
-#             REFERENCES Product (product_id),
-#         FOREIGN KEY (session_id)
-#             REFERENCES Sessions (session_id)
-#     );
-# """
-
-# with face.InterfaceDB() as conn:
-#     curr = conn.cursor()
-#     curr.execute(createTableQuery) 
-#     conn.commit()
-#     curr.close()
-
-    
+    res = p.get_n_recommended("01001-jetblack", 3)
+    print(res)
