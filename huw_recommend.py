@@ -7,6 +7,7 @@ from rdbconnection2 import conrdb
 from collections import Counter
 import ast
 import personalrecommendation as personalrec
+from pactum import Pactum
 
 app = Flask(__name__)
 api = Api(app)
@@ -98,7 +99,7 @@ class Recom(Resource):
             prodids = ReturnSelectExecution(popular_query, (user_segment, user_gender, cat,))
             
         elif type_rec == "similar":
-            pact = pactum.Pactum(connectionRDB)
+            pact = Pactum(conrdb)
             prodids = [p[0] for p in pact.get_n_recommended(profileid, count)]
 
         elif type_rec == "combination":
