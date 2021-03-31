@@ -4,7 +4,6 @@ import os
 from pymongo import MongoClient
 from dotenv import load_dotenv
 from rdbconnection2 import conrdb
-import Pactum as pactum
 from collections import Counter
 import ast
 
@@ -96,12 +95,43 @@ class Recom(Resource):
             and lower(category)=%s;
             """
             prodids = ReturnSelectExecution(popular_query, (user_segment, user_gender, cat,))
-        elif type_rec == "similar":
-            prodids = [p[0] for p in pactum.get_n_recommended(profileid, count)]
+
+        elif type_rec == "combination":
+            mogelijke_genders = ['Man', 'Vrouw']
+            hoeveelheid_man = 0
+            hoeveelheid_vrouw = 0
+            gender_count_list = [hoeveelheid_man, hoeveelheid_vrouw]
+            prod_man_list = []
+            prod_vrouw_list = []
+            bruikbare_producten = []
+            prodids = []
+            shopping_list = ast.literal_eval(shopping_list)
+            for i in shopping_list:
+                product_data = ReturnSelectExecution("""SELECT gender, sub_category from product Where product_id = %s""", [i[0]])
+                if product_data in mogelijke_genders:
+                    if product_data == 'Man':
+                        hoeveelheid_man += 1
+                        prod_man_list.append(i[0])
+                    if product_data == 'Vrouw':
+                        hoeveelheid_vrouw += 1
+                        prod_vrouw_list.append(i[0])
+            if hoeveelheid_vrouw > hoeveelheid_man:
+                product = prod_vrouw_list[0]
+            if hoeveelheid_man >= hoeveelheid_vrouw:
+                product = prod_man_list[0]
+
+            data_product = ReturnSelectExecution("SELECT array[gender, sub_category] from product Where product_id = %s", [product])
+            gender = data_product[0]
+            sub_category = data_product[1]
+            index = mogelijke_genders.index(gender)
+            for i in range(4):
+                output = ReturnSelectExecution("SELECT product_id FROM product WHERE sub_category=%s AND gender=%s ORDER BY RANDOM() LIMIT 4", [sub_category, mogelijke_genders[index-1]])
+                prodids.append(output)
         else:
             randcursor = database.products.aggregate([{ '$sample': { 'size': count } }])
             prodids = list(map(lambda x: x['_id'], list(randcursor)))
         return prodids, 200
+
 
 # This method binds the Recom class to the REST API, to parse specifically
 # requests in the format described below.
