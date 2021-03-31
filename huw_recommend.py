@@ -4,6 +4,7 @@ import os
 from pymongo import MongoClient
 from dotenv import load_dotenv
 from rdbconnection2 import conrdb
+import Pactum as pactum
 from collections import Counter
 import ast
 
@@ -95,6 +96,8 @@ class Recom(Resource):
             and lower(category)=%s;
             """
             prodids = ReturnSelectExecution(popular_query, (user_segment, user_gender, cat,))
+        elif type_rec == "similar":
+            prodids = [p[0] for p in pactum.get_n_recommended(profileid, count)]
         else:
             randcursor = database.products.aggregate([{ '$sample': { 'size': count } }])
             prodids = list(map(lambda x: x['_id'], list(randcursor)))

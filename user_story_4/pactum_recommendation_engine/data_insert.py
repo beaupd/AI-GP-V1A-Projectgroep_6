@@ -12,7 +12,7 @@ config_products = {
     "table": "product",    # Hoe heet de tabel in de relationele databasse
     "sep": ";",     # Door welk teken zijn de verschillende columns geseperate
     "columns": [
-        {"id": 0, "key": "_id", "column": "productID"},
+        {"id": 0, "key": "_id", "column": "product_id"},
         {"id": 1, "key": "name", "column": "name"},
         {"id": 2, "key": "brand", "column": "brand"},
         {"id": 3, "key": "gender", "column": "gender"},

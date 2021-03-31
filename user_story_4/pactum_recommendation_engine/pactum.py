@@ -9,7 +9,10 @@ class Pactum:
         self.conn = conn
 
     def get_n_recommended(self, product_id, n):
-        return self.recommend_products(product_id)["occurences"].most_common(n)
+        try:
+            return self.recommend_products(product_id)["occurences"].most_common(n)
+        except:
+            return None
 
     def recommend_products(self, product_id):
         cur = self.conn.cursor()
