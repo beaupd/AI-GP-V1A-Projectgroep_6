@@ -71,3 +71,31 @@ def populate_table(self):
         cur.close()
 ```
 Deze functie vraagt met de meegegeven connectie en een aantal bedachte specificaties in een lijst de waardes op van alle waardes van de producten bij de in de lijst voorkomende specificaties, vervolgens word er een moment opname gedaan om uiteindelijk de totale tijd te kunnen berekenen, daarna loopt de functie door alle gevonden rows en loopt die per row weer door alle columns(de specificaties), al de gevonden waardes van de specificaties van de producten stopt de functie in de nieuwe tabel in de array met diezelfde specificatie waarde. Per 1000 rows vind er een commit plaats, een berekening van de tijd en een schatting van de totale tijd. Op het einde is er nog een commit naar de database en een print van de totale tijd.
+
+De tweede functie, deze wordt gebruikt vanuit de front-end, deze returned "n" aantal aanbevolen producten met een meegegeven product-id. Deze ziet er als volgt uit:
+```python
+def get_n_recommended(self, product_id, n):
+        try:
+            return self.recommend_products(product_id)["occurences"].most_common(n)
+        except:
+            return None
+```
+Deze functie ontleed een response van de functie die die called, de called functie ziet er als volgt uit:
+```python
+def recommend_products(self, product_id):
+        cur = self.conn.cursor()
+        cur.execute(f"SELECT * FROM equals WHERE '{product_id}'=ANY(products)") # kijken waar de gegeven product_id voorkomt in de array
+        rows = cur.fetchall()
+        if not rows:
+            return None
+        # print([item for sublist in [c[2] for c in rows] for item in sublist])
+        # rows.sort(key = lambda rows: rows[-1]) # soorteren op groote array zodat we de kleinste kunnen pakken dit is meestal het meest overeenkomig qua eigenschappen.
+        found_list = list(filter(lambda p: p != product_id, [item for sublist in [c[2] for c in rows] for item in sublist]))# lijst van alle gevonden producten met het gegeven product id eruit gefilterd
+        res = {
+            "length": len(found_list),
+            "products": found_list,
+            "occurences": Counter(found_list) # occurences van de items zodat je de products kan kiezen die met de meeste overeenkomen 
+        }
+        return res
+```
+Deze functie vraagt alle producten op die in de arrays voorkomen waar het gegeven product-id ook in voorkomt. Dit zijn meestal meerdere rows met grote arrays, deze list of lists word geflattened en op zijn beurt weer gesorteerd op frequentie. De functie returned de response en die bestaat uit de totale lijst, de lengte van de totale lijst en de lijst gesorteerd op frequentie.
