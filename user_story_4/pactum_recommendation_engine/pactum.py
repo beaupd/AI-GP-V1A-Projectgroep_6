@@ -14,6 +14,10 @@ class Pactum:
         except:
             return None
 
+    def setup_recommendation(self):
+        self.create_table()
+        self.populate_table()
+
     def recommend_products(self, product_id):
         cur = self.conn.cursor()
         cur.execute(f"SELECT * FROM equals WHERE '{product_id}'=ANY(products)") # kijken waar de gegeven product_id voorkomt in de array
@@ -73,5 +77,6 @@ if __name__ == "__main__":
         p = Pactum(conn)
         # p.create_table()
         # p.populate_table()
-        res = p.get_n_recommended("01001-jetblack", 3)
-        print(res)
+        # res = p.get_n_recommended("01001-jetblack", 3)
+        # print(res)
+        p.setup_recommendation()
