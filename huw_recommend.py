@@ -7,6 +7,7 @@ from rdbconnection2 import conrdb
 from collections import Counter
 import ast
 import personalrecommendation as personalrec
+import pactum as pactum
 
 app = Flask(__name__)
 api = Api(app)
@@ -56,7 +57,7 @@ class Recom(Resource):
     the webshop. At the moment, the API simply returns a random set of products
     to recommend."""
 
-    def get(self, profileid, count, type_rec, shopping_list, pagecat):
+    def get(self, profileid, count, type_rec, shopping_list, pagecat, productid):
         """ This function represents the handler for GET requests coming in
         through the API. It currently returns a random sample of products. 
         
@@ -98,8 +99,12 @@ class Recom(Resource):
             prodids = ReturnSelectExecution(popular_query, (user_segment, user_gender, cat,))
             
         elif type_rec == "similar":
-            pact = pactum.Pactum(connectionRDB)
-            prodids = [p[0] for p in pact.get_n_recommended(profileid, count)]
+            pact = pactum.Pactum(personalrec.rdbcon)
+            products = pact.get_n_recommended(productid, count)
+            if products:
+                prodids = [p[0] for p in products]
+            else:
+                prodids = [] # todo alternative/fallback
 
         elif type_rec == "combination":
             mogelijke_genders = ['Man', 'Vrouw']
@@ -142,4 +147,4 @@ class Recom(Resource):
 
 # This method binds the Recom class to the REST API, to parse specifically
 # requests in the format described below.
-api.add_resource(Recom, "/<string:profileid>/<int:count>/<string:type_rec>/<string:shopping_list>/<string:pagecat>")
+api.add_resource(Recom, "/<string:profileid>/<int:count>/<string:type_rec>/<string:shopping_list>/<string:pagecat>/<string:productid>")

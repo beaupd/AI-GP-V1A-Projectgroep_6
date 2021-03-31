@@ -5,9 +5,9 @@ def conrdb():
     try:
         connectionRDB = psycopg2.connect(
             user='postgres',
-            password='<Password>',
+            password='admin',
             host='localhost',
-            database='postgres'
+            database='documentStore'
         )
         cursor = connectionRDB.cursor()
         return connectionRDB, cursor
