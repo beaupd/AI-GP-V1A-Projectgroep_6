@@ -4,10 +4,10 @@ TAAI-V1GP-19_2020
 
 | _GP-V1A-Groep 6_ 
 | --- |
-| 1778763 – Beau Dekker |
-| 1778287 – Gaynora van Dommelen  |
-| 1779750 – Robin Kroesen |
-| 1789287 – Khai-Tam Nguyen |
+| 1778763 – [Beau Dekker](#algoritme-4-similar) |
+| 1778287 – [Gaynora van Dommelen](#algoritme-1-popular)  |
+| 1779750 – [Robin Kroesen](#algoritme-2-combination) |
+| 1789287 – [Khai-Tam Nguyen](#algoritme-3-personal) |
 
 # **Inhoudsopgave**
 - [Inleiding](#Inleiding)
