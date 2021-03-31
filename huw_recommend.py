@@ -6,6 +6,7 @@ from dotenv import load_dotenv
 from rdbconnection2 import conrdb
 from collections import Counter
 import ast
+import personalrecommendation as personalrec
 
 app = Flask(__name__)
 api = Api(app)
@@ -130,6 +131,8 @@ class Recom(Resource):
             for i in range(4):
                 output = ReturnSelectExecution("SELECT product_id FROM product WHERE sub_category=%s AND gender=%s ORDER BY RANDOM() LIMIT 4", [sub_category, mogelijke_genders[index-1]])
                 prodids.append(output)
+        elif type_rec == "personal":
+            prodids = personalrec.giveRecommendation(profileid)
         else:
             randcursor = database.products.aggregate([{ '$sample': { 'size': count } }])
             prodids = list(map(lambda x: x['_id'], list(randcursor)))
