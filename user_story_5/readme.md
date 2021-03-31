@@ -23,9 +23,7 @@ _Aanleiding onderzoek_
 
 TODO: leg de opdracht uit
 
-Met een adviesrapport overtuig je jouw opdrachtgever van het advies of de adviezen die je aandraagt op basis van je onderzoek. Je gaat hierin kort in op dit onderzoek en presenteert daarna de alternatieven, ook wel maatregelen, oplossingen of scenario’s genoemd, die de opdrachtgever heeft om zijn probleem op te lossen.
-
-Tot slot presenteer je in jouw conclusie je uiteindelijke advies en onderbouw je dit advies. Met een kort actieplan, planning en (inschatting van) het benodigde budget maak je jouw advies compleet.
+We willen de omzet van per winkelmandje maximaliseren. Dit zullen we moeten doen door slimme algoritmes te schrijven die een goede aanbeveling geeft aan een klant. Om dit te kunnen doen moeten we de klant goed begrijpen om ze een goede aanbeveling te geven. 
 
 _Context_
 
