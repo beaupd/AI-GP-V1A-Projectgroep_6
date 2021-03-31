@@ -1,2 +1,24 @@
-###Pactum recommendation engine
-Door Beau Dekker
+# Algoritme 4: Similar
+
+## Beschrijving en onderbouwing
+De similar recommendation engine ookwel pactum recommendation, zoekt op basis van specificaties van een product soortgelijke producten. De engine werkt als volgt: Allereerst geef je het een product id, vervolgens zoekt de engine de bijbehorende specificaties en hun waarde op in de database, dan kijkt de engine welke producten overeenkomen met de waarde voor dezelfde specificaties, en sorteert de gevonden producten op basis van de frequentie dus hoevaak hetzelfde product bij meerdere specificaties overeenkomt met het gegeven product. Dit is in mijn opzicht de meest logisch gevonden manier om met de verkregen data soortgelijke producten aan te bevelen. Omdat je zo op basis van specificerende eigenschappen "meest" overeenkomende producten vind.
+
+### _Wat is het doel van het algoritme?_
+Om met een gegeven product soortgelijke producten te vinden om die aan te kunnen bevelen aan de klant. Dit kan bijvoorbeeld een klant helpen om een betere variant te vinden op een product waar de klant interesse in heeft(op heeft geklikt), zo kan het zorgen voor meer omzet omdat de interesse van de klant word ondersteund.
+
+### _Hoe is het algoritme bedacht?_
+Na te hebben gebrainstormed over de data en logische verbanden ertussen voor soortgelijke producten, vond ik dit op basis van de beschikbare data het meest logische verband voor de similar recommendation engine. 
+
+### _Hoe werkt het algoritme?_
+In een nieuwe tabel worden alle product-id's van waardes bij specificaties van alle producten gestopt in arrays in rows bij de bijbehorende waarde voor de specificatie. Zo ontstaan er arrays van producten die bij een specificatie dezelfde waarde delen. Vervolgens kan de engine met een gegeven product-id kijken in welke arrays die voorkomt, deze arrays opvragen en hier een grote lijst van maken, vervolgens de gevonden product-id's sorteren of optellen op basis van frequentie en dan kan je makkelijk de producten eruit kiezen die het meest voorkomen in de gesorteerde lijst.
+
+## Validatie van het algoritme
+
+
+### _Hoe is de werking van het algoritme gevalideerd?_
+Gekijkt in de product tabel welke producten met meerdere specificaties overeenkomen, vervolgens een van deze producten gegeven aan de recommendatie engine en gekeken of de bedachte overeenkomende producten terug kwamen als return. Dit heb ik met meerdere product overeenkomende specificatie groepen geprobeert en werkte perfect.
+
+## Beschrijving opzet recommendation engine 
+De engine bestaat uit een klasse die gebruik maakt van data uit de bij eerdere user-stories opgestelde relationele database. het belangrijkste gedeelte van de klasse is opgezet in drie functies: een functie die de tabel voor de recommendation engine aanmaakt, een functie die de aangemaakte tabel vult met data uit de product tabel en een functie die met een gegeven product-id onder andere een lijst terug geeft van alle product-id's uit de arrays waar het gegeven product-id in voorkomt uit de gevulde tabel.
+
+### _Hoe is de code opgezet_
