@@ -81,16 +81,17 @@ def insertData(ddbconn, conn, config, limit=10000):
             df = df[config["keys"]] # remove not needed columns
         df.reset_index(drop=True, inplace=True) # remove row index
         print(df.head())
+        df["previously_recommended"] = str(df["previously_recommended"])
         memory_buffer = BytesIO()
         df.to_csv(memory_buffer, sep=config["sep"], header=False, index=False) # write panda series to csv format 
         memory_buffer.seek(0)
         print(f"Inserting into {config['table']}")
         start = perf_counter()
-        # curr.copy_from(memory_buffer, config["table"], config["sep"])
+        curr.copy_from(memory_buffer, config["table"], config["sep"])
         columns = ', '.join('"{}"'.format(k["column"]) for k in config["columns"])
         print(columns)
-        sql = 'COPY {} ({}) FROM STDIN WITH CSV'.format(config["table"], columns)
-        curr.copy_expert(sql=sql, file=memory_buffer)
+        # sql = 'COPY {} ({}) FROM STDIN WITH CSV'.format(config["table"], columns)
+        # curr.copy_expert(sql=sql, file=memory_buffer)
         # conn.commit()
         curr.close()
         eind = perf_counter()
