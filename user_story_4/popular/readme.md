@@ -119,7 +119,7 @@ Een rij van popular hoort bij **meerdere** producten.
 
 Hieronder volgt de query die wordt uitgevoerd in createRelationTables.py om de relatie tussen de tabel popular en product te maken.
 
-```
+```sql
 DO $$
 DECLARE
     _segment VARCHAR;
@@ -229,3 +229,12 @@ END $$;
 
 ![](src/FLOWCHART_userPop.png)
 
+# Recommendations in de front-end
+
+_Gezond & verzorging_
+
+![](src/gezond_en_verzorging.PNG)
+
+_Wonen & vrije tijd_
+
+![](src/wonen_en_vrije_tijd.PNG)
