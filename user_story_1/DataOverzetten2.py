@@ -31,7 +31,7 @@ def products():
         rdbcur.execute(product_query, temp)
         rdbcon.commit()
 
-def profiels():
+def profiles():
     profile_var = []
     buids_var = []
     for element in mdbcur["profiles"].find():
@@ -117,10 +117,11 @@ def sessions():
         print(f"Approximately {skip} documents have been handled in {time} second(s).")
 
 
-start_product = perf_counter()
-products()
-eind_product = perf_counter()
-print(f"Insertion of products took {eind_product - start_product} second(s).")
+# start_product = perf_counter()
+# products()
+# eind_product = perf_counter()
+# print(f"Insertion of products took {eind_product - start_product} second(s).")
+# exit()
 start_profiles = perf_counter()
 profiles()
 eind_profiles = perf_counter()

@@ -4,7 +4,7 @@ from pymongo import MongoClient
 class InterfaceDB:
 
     config = {
-        "db": "postgres",
+        "db": "documentStore",
         "user": "postgres",
         "password": "admin "
     }

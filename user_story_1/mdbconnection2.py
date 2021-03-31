@@ -4,7 +4,7 @@ from pymongo import MongoClient
 def conmdb():
     try:
         myclient = MongoClient()
-        db = myclient["huwebshop"]
+        db = myclient["DocumentStore"]
         return db
     except pymongo.DatabaseError:
         print("Connection with mongodb failed")
