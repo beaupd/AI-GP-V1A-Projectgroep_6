@@ -22,3 +22,19 @@ Gekijkt in de product tabel welke producten met meerdere specificaties overeenko
 De engine bestaat uit een klasse die gebruik maakt van data uit de bij eerdere user-stories opgestelde relationele database. het belangrijkste gedeelte van de klasse is opgezet in drie functies: een functie die de tabel voor de recommendation engine aanmaakt, een functie die de aangemaakte tabel vult met data uit de product tabel en een functie die met een gegeven product-id onder andere een lijst terug geeft van alle product-id's uit de arrays waar het gegeven product-id in voorkomt uit de gevulde tabel.
 
 ### _Hoe is de code opgezet_
+De similar engine recommendatie code bestaat uit een klasse waaraan je een open connectie meegeeft met de relationele database(postgresql). Vervolgens is er deze functie: 
+```python
+def create_table(self):
+        cur = self.conn.cursor()
+        cur.execute("DROP TABLE IF EXISTS equals CASCADE")
+        cur.execute("""
+            CREATE TABLE equals (
+                keyfield VARCHAR,
+                value VARCHAR PRIMARY KEY,
+                products VARCHAR[],
+                length INT
+            );
+        """)
+        self.conn.commit()
+        cur.close()
+```
