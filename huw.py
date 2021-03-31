@@ -220,8 +220,8 @@ class HUWebshop(object):
         packet['shopping_cart_count'] = self.shoppingcartcount()
         if 'r_products' not in packet:
             packet['r_products'] = self.recommendations(4, list(self.recommendationtypes.keys())[4], [], [])
-            packet['r_type'] = list(self.recommendationtypes.values())[0]
-            packet['r_string'] = list(self.recommendationtypes.values())[0]
+            packet['r_type'] = list(self.recommendationtypes.values())[4]
+            packet['r_string'] = list(self.recommendationtypes.values())[4]
         return render_template(template, packet=packet)
 
     """ ..:: Recommendation Functions ::.. """

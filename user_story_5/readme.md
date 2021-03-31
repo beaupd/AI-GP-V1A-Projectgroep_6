@@ -78,7 +78,16 @@ geen andere problemen gevonden bij het testen met verschillende profiles en klik
 
 ### _Hoe is de code opgezet_
 
-TODO: Code beschrijving
+```python
+Creëer tabel popular als deze nog niet bestond met de kolommen segment, gender, category, FK product_id1, FK product_id2, FK product_id3, FK product_id4, FK product_id5.
+   Voor elk _segment in lijst met segments loop:
+	     Stop alle mogelijke gender-category combinaties binnen de 	verzameling met producten, de orders van profielen met segment _segment in een lijst seg.
+	     Voor elke _gender_category combinatie in seg loop:
+		       Stop de eerste vijf producten binnen de verzameling producten uit de orders van profielen met segment _segment, die voldoen aan de _gender_category combinatie in een lijst prodids.
+		
+		       Voeg achtereenvolgens de volgende delen in de tabel in: segment, gender, category, prodids[0], prodids[1], prodids[2], prodids[3], prodids[4]
+
+```
 
 # Algoritme 2: Combination
 

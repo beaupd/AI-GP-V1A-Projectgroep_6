@@ -9,6 +9,7 @@ import ast
 import personalrecommendation as personalrec
 import pactum as pactum
 
+
 app = Flask(__name__)
 api = Api(app)
 
@@ -105,6 +106,7 @@ class Recom(Resource):
                 prodids = [p[0] for p in products]
             else:
                 prodids = [] # todo alternative/fallback
+        
 
         elif type_rec == "combination":
             mogelijke_genders = ['Man', 'Vrouw']
