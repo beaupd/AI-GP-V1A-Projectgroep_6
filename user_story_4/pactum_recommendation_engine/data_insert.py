@@ -38,10 +38,6 @@ config_profile = {
     ] # De namen van de columns met de plaats en bijbehorende key
 }
 
-buids_profile = {
-
-}
-
 def get_length(db, collection):
         return db[collection].find().count()
 
