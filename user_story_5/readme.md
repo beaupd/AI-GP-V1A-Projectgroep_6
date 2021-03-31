@@ -9,6 +9,14 @@ TAAI-V1GP-19_2020
 | 1779750 – Robin Kroesen |
 | 1789287 – Khai-Tam Nguyen |
 
+# **Inhoudsopgave**
+- [Inleiding](#Inleiding)
+- [Algoritme popular](#algoritme-1-popular)
+- [Algoritme combination](#algoritme-2-combination)
+- [Algoritme personal](#algoritme-3-personal)
+- [Algoritme similar](#algoritme-4-similar)advies
+- [Advies](#advies)
+
 # Inleiding
 
 _Aanleiding onderzoek_ 
