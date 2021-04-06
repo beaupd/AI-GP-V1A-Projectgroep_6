@@ -104,7 +104,83 @@ BEGIN
 END $$;
 """
 
+query_meest_gekocht_table = """
+DO $$
+DECLARE
+    cat VARCHAR;
+    i INT;
+    index INT;
+    r RECORD;
+    prod_cat VARCHAR[];
+    prod_freq VARCHAR[];
+    temp VARCHAR[];
+    temp2 INT[];
+    temp3 INT[];
+    cleanList VARCHAR[];
+BEGIN
+    DROP TABLE IF EXISTS meest_gekocht CASCADE;
+    CREATE TABLE meest_gekocht(
+        category VARCHAR(255),
+        product_id1 VARCHAR(255),
+        product_id2 VARCHAR(255),
+        product_id3 VARCHAR(255),
+        product_id4 VARCHAR(255),
+        FOREIGN KEY (product_id1)
+                REFERENCES product(product_id),
+        FOREIGN KEY (product_id2)
+                REFERENCES product(product_id),
+        FOREIGN KEY (product_id3)
+                REFERENCES product(product_id),
+        FOREIGN KEY (product_id4)
+                REFERENCES product(product_id)
+    );
+
+    foreach cat in ARRAY array(select lower(category) from product
+                        natural join orders as _id
+                        group by lower(category)
+                        order by lower(category)) loop
+      temp := ARRAY[Null];
+      temp2 := ARRAY[Null];
+      if cat is not Null then
+         prod_cat := array(select ARRAY[product_id, count(*)::varchar] from product
+                                       natural join orders as _id
+                                       where lower(category)=cat
+                                       group by product_id
+                                       order by product_id);
+      else
+         prod_cat := array(select ARRAY[product_id, count(*)::varchar] from product
+                                       natural join orders as _id
+                                       where lower(category) is Null
+                                       group by product_id
+                                       order by product_id);
+      end if;
+      if array_length(prod_cat, 1) >= 1 then
+            foreach prod_freq slice 1 in ARRAY prod_cat loop
+               temp = array_append(temp, prod_freq[1]);
+               temp2 = array_append(temp2, prod_freq[2]::int);
+            end loop;
+         end if;
+         temp3 = ARRAY(select distinct unnest(temp2) order by 1);
+         if array_length(temp3, 1) > 1 then
+            for i in 1..4 loop
+               for r in select max(x) as f from unnest(temp2) as x loop
+                  index = array_position(temp2, r.f);
+                  cleanList[i] = temp[index];
+                  temp = array_remove(temp, temp[index]);
+               end loop;
+            end loop;
+            INSERT INTO meest_gekocht VALUES (cat, cleanList[1], cleanList[2], cleanList[3], cleanList[4]);
+         else
+            if temp[2] is not Null then
+                  INSERT INTO meest_gekocht VALUES (cat, temp[2], temp[3], temp[4], temp[5]);
+            end if;
+         end if;
+    end loop;
+END $$;
+"""
+
 rdbcur.execute(query_popular_table)
+rdbcur.execute(query_meest_gekocht_table)
 rdbcon.commit()
 rdbcur.close()
 rdbcon.close()
