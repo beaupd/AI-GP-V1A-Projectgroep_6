@@ -102,6 +102,7 @@ class HUWebshop(object):
         self.app.add_url_rule('/productdetail/<productid>/', 'productdetail', self.productdetail)
         self.app.add_url_rule('/winkelmand/', 'winkelmand', self.shoppingcart)
         self.app.add_url_rule('/categorieoverzicht/', 'categorieoverzicht', self.categoryoverview)
+        self.app.add_url_rule('/foryoupage', 'foryoupage', self.foryoupage)
         self.app.add_url_rule('/change-profile-id', 'profielid', self.changeprofileid, methods=['POST'])
         self.app.add_url_rule('/add-to-shopping-cart', 'toevoegenaanwinkelmand', self.addtoshoppingcart, methods=['POST'])
         self.app.add_url_rule('/producten/pagination-change', 'aantalperpaginaaanpassen', self.changepaginationcount, methods=['POST'])
@@ -300,6 +301,10 @@ class HUWebshop(object):
     def categoryoverview(self):
         """ This subpage shows all top-level categories in its main menu. """
         return self.renderpackettemplate('categoryoverview.html')
+
+    def foryoupage(self):
+        """ This is a page specialised for the user with more recommendations combined """
+        return self.renderpackettemplate("foryoupage.html")
 
     """ ..:: Dynamic AJAX Endpoints ::.. """
 
