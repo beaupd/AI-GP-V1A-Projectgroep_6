@@ -29,13 +29,6 @@ else:
     client = MongoClient()
 database = client.huwebshop 
 
-def HighestFrequency(lijst):
-    """
-    Geeft het element met de hoogste frequentie in de lijst terug.
-    """
-    freq = Counter(lijst)
-    return freq.most_common(1)[0][0]
-
 def ReturnSelectExecution(sql_query, query_var):
     """
     Voert een query uit, met de meegegeven variabelen.
@@ -58,7 +51,7 @@ class Recom(Resource):
     the webshop. At the moment, the API simply returns a random set of products
     to recommend."""
 
-    def get(self, profileid, count, type_rec, shopping_list, pagecat, productid):
+    def get(self, profileid, count, type_rec, shopping_list, pagecat, huidige_klik_events, productid):
         """ This function represents the handler for GET requests coming in
         through the API. It currently returns a random sample of products. 
         
@@ -97,6 +90,7 @@ class Recom(Resource):
             and lower(gender)=%s
             and lower(category)=%s;
             """
+            print(huidige_klik_events)
             prodids = ReturnSelectExecution(popular_query, (user_segment, user_gender, cat,))
             
         elif type_rec == "similar":
@@ -149,4 +143,4 @@ class Recom(Resource):
 
 # This method binds the Recom class to the REST API, to parse specifically
 # requests in the format described below.
-api.add_resource(Recom, "/<string:profileid>/<int:count>/<string:type_rec>/<string:shopping_list>/<string:pagecat>/<string:productid>")
+api.add_resource(Recom, "/<string:profileid>/<int:count>/<string:type_rec>/<string:shopping_list>/<string:pagecat>/<string:huidige_klik_events>/<string:productid>")
