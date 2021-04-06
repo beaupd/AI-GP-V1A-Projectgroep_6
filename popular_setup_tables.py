@@ -179,8 +179,91 @@ BEGIN
 END $$;
 """
 
+query_gender_category_table = """
+DO $$
+DECLARE
+    _gender_category_combi VARCHAR[];
+    _prod_freq_list VARCHAR[];
+    _prod_freq VARCHAR[];
+    _clean_list VARCHAR[];
+    _prod_list VARCHAR[];
+    _freq_list INT[];
+    _unique_freqs INT[];
+    index INT;
+    i INT;
+    r RECORD;
+BEGIN
+    -------------------[ MAAK OF UPDATE DE FILTER TABEL ]
+    DROP TABLE IF EXISTS gender_category CASCADE;
+    CREATE TABLE gender_category(
+        gender VARCHAR(255),
+        category VARCHAR(255),
+        product_id1 VARCHAR(255),
+        product_id2 VARCHAR(255),
+        product_id3 VARCHAR(255),
+        product_id4 VARCHAR(255),
+        FOREIGN KEY (product_id1)
+                REFERENCES product(product_id),
+        FOREIGN KEY (product_id2)
+                REFERENCES product(product_id),
+        FOREIGN KEY (product_id3)
+                REFERENCES product(product_id),
+        FOREIGN KEY (product_id4)
+                REFERENCES product(product_id)
+    );
+    -- Voor elke gender-categorie combie in de verzameling orders
+    foreach _gender_category_combi slice 1 in array(select array(select array[lower(gender), lower(category)] from orders
+                                                    natural join product
+                                                    group by lower(gender), lower(category))) loop
+        -- Groupeer de producten die in deze gender-categorie verzameling horen met de frequentie voor elk product
+        if _gender_category_combi[2] is not Null then
+            if _gender_category_combi[1] is Null then
+                _prod_freq_list := array(select array(select array[product_id, count(*)::varchar] from orders
+                                         natural join product
+                                         where lower(gender) is Null
+                                         and lower(category)=_gender_category_combi[2]
+                                         group by product_id));
+            else
+                _prod_freq_list := array(select array(select array[product_id, count(*)::varchar] from orders
+                                         natural join product
+                                         where lower(gender)=_gender_category_combi[1]
+                                         and lower(category)=_gender_category_combi[2]
+                                         group by product_id));
+            end if;
+            _prod_list := ARRAY[Null];
+            _freq_list := ARRAY[Null];
+            foreach _prod_freq slice 1 in ARRAY(_prod_freq_list) loop
+                _prod_list = array_append(_prod_list, _prod_freq[1]);
+                _freq_list = array_append(_freq_list, _prod_freq[2]::int);
+            end loop;
+            _unique_freqs = ARRAY(select distinct unnest(_freq_list) order by 1);
+            if array_length(_unique_freqs, 1) > 1 then
+                for i in 1..4 loop -- Neem de 4 meestvoorkomende producten als recommendations
+                    for r in select max(x) as f from unnest(_freq_list) as x loop
+                            index = array_position(_freq_list, r.f);
+                            _clean_list[i] = _prod_list[index];
+                            _prod_list = array_remove(_prod_list, _prod_list[index]);
+                    end loop;
+                end loop;
+                if _clean_list[1] is not Null then -- Stop deze recommendations in de tabel
+                    INSERT INTO gender_category VALUES (_gender_category_combi[1],
+                                                        _gender_category_combi[2],
+                                                        _clean_list[1],
+                                                        _clean_list[2],
+                                                        _clean_list[3],
+                                                        _clean_list[4]);
+                else
+                    CONTINUE;
+                end if;
+            end if;
+        end if;
+    end loop;
+END $$;
+"""
+
 rdbcur.execute(query_popular_table)
 rdbcur.execute(query_meest_gekocht_table)
+rdbcur.execute(query_gender_category_table)
 rdbcon.commit()
 rdbcur.close()
 rdbcon.close()
