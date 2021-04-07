@@ -20,7 +20,6 @@ vervolgens via een procedurele programmeertaal de documents data vanuit mongodb 
 1779750 – Robin Kroesen  
 1789287 – Khai-Tam Nguyen  
 
-lalala
 
 ## Install requirements.txt
 open up a command line inside project directory and type:
