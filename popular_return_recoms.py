@@ -10,7 +10,7 @@ def highest_frequency(array):
     freq = Counter(array)
     return freq.most_common(1)[0][0]
 
-def simple_algorithm(category_page):
+def simple_algorithm(prodids, category_page):
     """
         Deze functie modificeert een meegegeven lijst met de recommendation
         producten uit de meest_gekocht tabel filter op basis van de categoriepagina.
@@ -19,7 +19,7 @@ def simple_algorithm(category_page):
     """
     pass
 
-def gender_category_based_algorithm(klikt_events, category_page):
+def gender_category_based_algorithm(prodids, klik_events, category_page):
     """
         Deze functie modificeert een meegegeven lijst met de recommendation
         producten uit de gender_category tabel filter op basis van het meestvoorkomende
@@ -28,9 +28,15 @@ def gender_category_based_algorithm(klikt_events, category_page):
         :param klik_events: list: lijst met productid's
         :param category_page: str : categorie
     """ 
-    pass
+    user_all_genders_query = """"select array(select lower(gender) from product where product_id=ANY(%s::varchar[]));""""
+    user_all_genders = ReturnSelectExecution(user_all_genders_query, (klikevents,))
+    user_gender = highest_frequency(user_all_genders)
+    _combi_bestaat_query = """select exists(select * from gender_category where gender=%s and category=%s)::int"""
+    if ReturnSelectExecution(_combi_bestaat_query, (user_gender, category_page,)):
+        prodids_query = """select array[product_id1, product_id2, product_id3, product_id4] from gender_category where gender=%s and category=%s"""
+        prodids = ReturnSelectExecution(prodids_query, (user_gender, category_page,))
 
-def return_recommended_products(profileid, klikevents):
+def return_recommended_products(profileid, category_page, klik_events):
     """
         Deze functie geeft een lijst met productid's terug die
         passen bij het gedrag van de user op de website.
@@ -38,56 +44,30 @@ def return_recommended_products(profileid, klikevents):
         :param klikevents: list: lijst met productid's
         :returns: list : lijst met productid's
     """
-    # 1.    User klikt op 'n categorie pagina (i)
-    # 2.    Als user bekend is
-    _is_user_bekend_query = """select exists (select * from profile where profile_id=%s)::int"""
-    if ReturnSelectExecution(_is_user_bekend_query, (profileid,)):
-    # 2.1       Als user eerdere orders heeft
-        _user_heeft_orders_query = """
-            select exists(select * from orders
-            natural join(select * from sessions
-            natural join(select browser_id from buids
-            where profile_id=%s) as _id) as __id)::int;
-        """
-        if ReturnSelectExecution(_user_heeft_orders_query, (profileid,)):
-    # 2.1.1         Select segment van user
-            user_segment_query = """select segment from profile where profile_id=%s"""
-            user_segment = ReturnSelectExecution(user_segment_query, (profile_id,))
-    # 2.1.2         Select alle genders die voorkomen in de orders van de user met de frequentie voor elke gender
-    # 2.1.3         Select het gender dat het meest voorkomt
-    # 2.1.4         Als de combinatie segment-gender-category bestaat in de tabel popular
-    # 2.1.4.1           Select de productid's die horen bij de combi segment-gender-category
-    # 2.1.4.2           Return productid's (o)
-    # 2.1.4.3           END
-    # 2.1.5         Anders
-    # 2.1.5.1           Return lege lijst (o)
-    # 2.1.5.2           EIND
-    # 2.2       Anders
-    # 2.2.1         Als user huidige klik events heeft -----------------------------------------------------+
-    # 2.2.1.1           Select meest voorkomende product gender in klik events                              |
-    # 2.2.1.2           Als de combinatie gender-category bestaat in de tabel gender_category               |
-    # 2.2.1.2.1             Select de product_id's behorende bij de combinatie gender-category              |   ==============================================
-    # 2.2.1.2.2             Return productid's (o)                                                          |   Gender-Category based Recommendation Algorithm
-    # 2.2.1.2.3             EIND                                                                            |   ==============================================
-    # 2.2.1.3           Anders                                                                              |
-    # 2.2.1.3.1             Return lege lijst (o)                                                           |
-    # 2.2.1.3.2             EIND ---------------------------------------------------------------------------+
-    # 2.2.2         Anders ---------------------------------------------------------------------------------+
-    # 2.2.2.1           Select de productid's behorende bij categorie uit de meest_gekocht tabel            |   ================================
-    # 2.2.2.2           Return productid's (o)                                                              |   Simple Recommendation Algorithm
-    # 2.2.2.3           EIND -------------------------------------------------------------------------------+   ================================
-    # 3.    Anders
-    # 3.1       Als user huidige klik events heeft ---------------------------------------------------------+
-    # 3.1.1         Select meest voorkomende product gender in klik events                                  |
-    # 3.1.2         Als de combinatie gender-category bestaat in de tabel gender_category                   |
-    # 3.1.2.1           Select de product_id's behorende bij de combinatie gender_category                  |   ==============================================
-    # 3.1.2.2           Return productid's (o)                                                              |   Gender-Category based Recommendation Algorithm
-    # 3.1.2.3           EIND                                                                                |   ==============================================
-    # 3.1.3         Anders                                                                                  |
-    # 3.1.3.1           Return lege lijst (o)                                                               |
-    # 3.1.3.2           EIND -------------------------------------------------------------------------------+
-    # 3.2       Anders -------------------------------------------------------------------------------------+
-    # 3.2.1         Select de productid's behorende bij categorie uit de meest_gekocht tabel                |   ===============================
-    # 3.2.2         Return productid's (o)                                                                  |   Simple Recommendation Algorithm
-    # 3.2.3         EIND -----------------------------------------------------------------------------------+   ===============================
-    pass
+    prodids = []
+    _user_is_bekend_query = """select exists (select * from profile where profile_id=%s)::int"""
+    _user_heeft_orders_query = """select exists(select * from orders
+                                    natural join(select * from sessions
+                                    natural join(select browser_id from buids
+                                    where profile_id=%s) as _id) as __id)::int;"""
+    if ReturnSelectExecution(_user_is_bekend_query, (profileid,)) and ReturnSelectExecution(_user_heeft_orders_query, (profileid,)):
+        user_segment_query = """select lower(segment) from profile where profile_id=%s"""
+        user_segment = ReturnSelectExecution(user_segment_query, (profileid,))
+        user_all_genders_query = """select array(select lower(gender) from product
+                                    natural join(select product_id from orders
+                                    natural join(select session_id from sessions
+                                    natural join(select browser_id from buids
+                                    where profile_id=%s) as _id) as __id) as ___id)"""
+        user_all_genders = ReturnSelectExecution(user_all_genders_query, (profileid,))
+        user_gender = highest_frequency(user_all_genders)
+        _combi_bestaat_query = """select exists(select * from popular where lower(segment)=%s and lower(gender)=%s and lower(category)=%s)::int;"""
+        if ReturnSelectExecution(_combi_bestaat_query, (user_segment, user_gender, category_page,)):
+            prodids_query = """select array[product_id1, product_id2, product_id3, product_id4] from popular
+                                where lower(segment)=%s and lower(gender)=%s and lower(category)=%s;"""
+            prodids = ReturnSelectExecution(prodids_query, (user_segment, user_gender, category_page,))
+    else:
+        if klikevents:
+            gender_category_based_algorithm(prodids, klik_events, category_page)
+        else:
+            simple_algorithm(prodids, category_page)
+    return prodids
