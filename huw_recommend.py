@@ -111,6 +111,12 @@ class Recom(Resource):
                 prodids.append(output)
         elif type_rec == "personal":
             prodids = personalrec.giveRecommendation(profileid)
+        elif type_rec == "behaviour":
+            rdbcon, rdbcur = conrdb()
+            huidige_klik_events = ast.literal_eval(huidige_klik_events)
+            fyp_list = [p for product in huidige_klik_events for p in pactum.Pactum(rdbcon).recommend_products(product)["products"]]
+            print([prod[0] for prod in Counter(fyp_list).most_common(4)])
+            prodids = [prod[0] for prod in Counter(fyp_list).most_common(4)]
         else:
             randcursor = database.products.aggregate([{ '$sample': { 'size': count } }])
             prodids = list(map(lambda x: x['_id'], list(randcursor)))

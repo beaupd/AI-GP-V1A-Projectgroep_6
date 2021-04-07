@@ -3,9 +3,6 @@ import random, os, json, urllib.parse, requests
 from pymongo import MongoClient
 from dotenv import load_dotenv
 from bson.objectid import ObjectId
-from pactum import Pactum # verplaats
-from rdbconnection2 import conrdb # verplaats
-from collections import Counter # verplaats
 
 # The secret key used for session encryption is randomly generated every time
 # the server is started up. This means all session data (including the 
@@ -13,9 +10,6 @@ from collections import Counter # verplaats
 app = Flask(__name__)
 app.secret_key = os.urandom(16)
 
-rdbcon, rdbcur = conrdb() # verplaats
-
-pactum = Pactum(conn) # verplaats
 
 class HUWebshop(object):
     """ This class combines all logic behind the HU Example Webshop project. 
@@ -43,8 +37,6 @@ class HUWebshop(object):
     recommendationtypes = {'popular':"Anderen kochten ook",'similar':"Soortgelijke producten",'combination':'Combineert goed met','behaviour':'Passend bij uw gedrag','personal':'Persoonlijk aanbevolen'}
     
     huidige_klik_events = []
-
-    fyp_list = []
 
     """ ..:: Initialization and Category Index Functions ::.. """
 
@@ -203,9 +195,6 @@ class HUWebshop(object):
         """ This function returns the number of items in the shopping cart. """
         return sum(list(map(lambda x: x[1], session['shopping_cart'])))
 
-    def append_fyp_list(self, product):
-        self.fyp_list.extend(pactum.recommend_products(product)["products"])
-
     """ ..:: Session and Templating Functions ::.. """
 
     def checksession(self):
@@ -319,12 +308,12 @@ class HUWebshop(object):
 
     def foryoupage(self):
         """ This is a page specialised for the user with more recommendations combined """
-        counted_list = counter(self.fyp_list)
         return self.renderpackettemplate("foryoupage.html", {
             'r_products':self.recommendations(4, list(self.recommendationtypes.keys())[4], [], []),\
             'r_type':list(self.recommendationtypes.values())[4],\
             'r_string':list(self.recommendationtypes.values())[4],\
-            'r_top_pactum':self.recommendations(4, list(counted_list.most_common(4)), [], [])
+            'r_top_pactum':self.recommendations(4, list(self.recommendationtypes.keys())[3], [], [], self.huidige_klik_events)
+            #'r_top_pactum':list(counted_list.most_common(4))
         })
 
     """ ..:: Dynamic AJAX Endpoints ::.. """
