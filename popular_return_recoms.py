@@ -1,4 +1,14 @@
 from huw_recommend import ReturnSelectExecution
+from collections import Counter
+
+def highest_frequency(array):
+    """
+        Zoekt het element met de hoogste frequentie in een lijst.
+
+        :param array: list: lijst met elementen
+    """
+    freq = Counter(array)
+    return freq.most_common(1)[0][0]
 
 def simple_algorithm(category_page):
     """
@@ -9,18 +19,18 @@ def simple_algorithm(category_page):
     """
     pass
 
-def gender_category_based_algorithm(huidige_klikt_events, category_page):
+def gender_category_based_algorithm(klikt_events, category_page):
     """
         Deze functie modificeert een meegegeven lijst met de recommendation
         producten uit de gender_category tabel filter op basis van het meestvoorkomende
         gender en de huidige categoriepagina.
 
-        :param huidige_klik_events: list: lijst met productid's
+        :param klik_events: list: lijst met productid's
         :param category_page: str : categorie
     """ 
     pass
 
-def return_recommended_products(klikevents):
+def return_recommended_products(profileid, klikevents):
     """
         Deze functie geeft een lijst met productid's terug die
         passen bij het gedrag van de user op de website.
@@ -30,8 +40,19 @@ def return_recommended_products(klikevents):
     """
     # 1.    User klikt op 'n categorie pagina (i)
     # 2.    Als user bekend is
+    _is_user_bekend_query = """select exists (select * from profile where profile_id=%s)::int"""
+    if ReturnSelectExecution(_is_user_bekend_query, (profileid,)):
     # 2.1       Als user eerdere orders heeft
+        _user_heeft_orders_query = """
+            select exists(select * from orders
+            natural join(select * from sessions
+            natural join(select browser_id from buids
+            where profile_id=%s) as _id) as __id)::int;
+        """
+        if ReturnSelectExecution(_user_heeft_orders_query, (profileid,)):
     # 2.1.1         Select segment van user
+            user_segment_query = """select segment from profile where profile_id=%s"""
+            user_segment = ReturnSelectExecution(user_segment_query, (profile_id,))
     # 2.1.2         Select alle genders die voorkomen in de orders van de user met de frequentie voor elke gender
     # 2.1.3         Select het gender dat het meest voorkomt
     # 2.1.4         Als de combinatie segment-gender-category bestaat in de tabel popular
