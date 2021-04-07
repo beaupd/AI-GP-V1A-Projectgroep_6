@@ -17,7 +17,7 @@ class Pactum:
         else:
             return None
 
-    def get_all_from_list(self, products):
+    def get_all(self, products):
         if len(products) > 0:
             cur = self.conn.cursor()
             query = ""
