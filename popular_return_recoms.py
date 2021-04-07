@@ -5,9 +5,12 @@ rdbcon, rdbcur = conrdb()
 
 def return_selection(sql_query, query_var):
     """
-    Voert een query uit, met de meegegeven variabelen.
-    (Gaat uit van een 'SELECT' query waarbij data terug moet worden gehaald.)
-    Geeft de geselecteerde waardes terug.
+        Voert een query uit, met de meegegeven variabelen.
+        (Gaat uit van een 'SELECT' query waarbij data terug moet worden gehaald.)
+        Geeft de geselecteerde waardes terug.
+
+        :param sql_query: str: query die uitgevoerd moet worden
+        :param query_var: tuple: variabelen die nodig zijn om de query uit te voeren
     """
     rdbcon, rdbcur = conrdb()
     rdbcur.execute(sql_query, query_var)
@@ -31,8 +34,8 @@ def highest_frequency(array):
 
 def simple_algorithm(category_page):
     """
-        Deze functie modificeert een meegegeven lijst met de recommendation
-        producten uit de meest_gekocht tabel filter op basis van de categoriepagina.
+        Deze functie geeft recommendations
+        uit de meest_gekocht tabel filter op basis van de categoriepagina.
 
         :param category_page: str : categorie
     """
@@ -45,8 +48,8 @@ def simple_algorithm(category_page):
 
 def gender_category_based_algorithm(klik_events, category_page):
     """
-        Deze functie modificeert een meegegeven lijst met de recommendation
-        producten uit de gender_category tabel filter op basis van het meestvoorkomende
+        Deze functie geeft recommendations
+        uit de gender_category tabel filter op basis van het meestvoorkomende
         gender en de huidige categoriepagina.
 
         :param klik_events: list: lijst met productid's
@@ -67,6 +70,8 @@ def return_recommended_products(profileid, category_page, klik_events):
         Deze functie geeft een lijst met productid's terug die
         passen bij het gedrag van de user op de website.
 
+        :param profileid: str : profiel van user
+        :param category_page: str: categorie
         :param klikevents: list: lijst met productid's
         :returns: list : lijst met productid's
     """
@@ -97,5 +102,3 @@ def return_recommended_products(profileid, category_page, klik_events):
         else:
             prodids = simple_algorithm(category_page)
     return prodids
-
-#print(return_recommended_products('5a97a846af47360001d62ee2', 'gezond & verzorging', []))
