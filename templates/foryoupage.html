@@ -1,11 +1,19 @@
 {% extends "base.html" %}
 {% block content %}
 <h1>FOR YOU PAGE</h1>
+<<<<<<< HEAD
 {% if packet.r_top_pactum %}
 <h4>Producten op basis van je getoonde interesse</h4>
 {% endif %}
 <div id="recommendedproducts">
     {% for product in packet.r_top_pactum %}
+=======
+{% if packet.r_products %}
+<h4>{{ packet.r_string }}</h4>
+{% endif %}
+<div id="recommendedproducts">
+    {% for product in packet.r_products %}
+>>>>>>> e0a91d49a70f38009b04617e179c5adf02f6d328
         <div class="productpageblock hublueborder">
             <a href="/productdetail/{{ product.id }}">
                 <div class="productname">{{ product.name }}</div>
