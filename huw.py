@@ -307,7 +307,11 @@ class HUWebshop(object):
 
     def foryoupage(self):
         """ This is a page specialised for the user with more recommendations combined """
-        return self.renderpackettemplate("foryoupage.html")
+        return self.renderpackettemplate("foryoupage.html", {
+            'r_products':self.recommendations(4, list(self.recommendationtypes.keys())[4], [], []),\
+            'r_type':list(self.recommendationtypes.values())[4],\
+            'r_string':list(self.recommendationtypes.values())[4]
+        })
 
     """ ..:: Dynamic AJAX Endpoints ::.. """
 

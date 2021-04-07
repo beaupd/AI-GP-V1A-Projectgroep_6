@@ -29,19 +29,21 @@ def highest_frequency(array):
     freq = Counter(array)
     return freq.most_common(1)[0][0]
 
-def simple_algorithm(prodids, category_page):
+def simple_algorithm(category_page):
     """
         Deze functie modificeert een meegegeven lijst met de recommendation
         producten uit de meest_gekocht tabel filter op basis van de categoriepagina.
 
         :param category_page: str : categorie
     """
+    prodids = []
     category_bestaat_query = """select exists(select * from meest_gekocht where category=%s)::int;"""
     if return_selection(category_bestaat_query, (category_page,)):
         prodids_query = """select array[product_id1, product_id2, product_id3, product_id4] from meest_gekocht where category=%s;"""
         prodids = return_selection(prodids_query, (category_page,))
+        return prodids
 
-def gender_category_based_algorithm(prodids, klik_events, category_page):
+def gender_category_based_algorithm(klik_events, category_page):
     """
         Deze functie modificeert een meegegeven lijst met de recommendation
         producten uit de gender_category tabel filter op basis van het meestvoorkomende
@@ -50,13 +52,15 @@ def gender_category_based_algorithm(prodids, klik_events, category_page):
         :param klik_events: list: lijst met productid's
         :param category_page: str : categorie
     """ 
+    prodids = []
     user_all_genders_query = """select array(select lower(gender) from product where product_id=ANY(%s::varchar[]));"""
-    user_all_genders = return_selection(user_all_genders_query, (klikevents,))
+    user_all_genders = return_selection(user_all_genders_query, (klik_events,))
     user_gender = highest_frequency(user_all_genders)
     _combi_bestaat_query = """select exists(select * from gender_category where gender=%s and category=%s)::int"""
     if return_selection(_combi_bestaat_query, (user_gender, category_page,)):
         prodids_query = """select array[product_id1, product_id2, product_id3, product_id4] from gender_category where gender=%s and category=%s"""
         prodids = return_selection(prodids_query, (user_gender, category_page,))
+        return prodids
 
 def return_recommended_products(profileid, category_page, klik_events):
     """
@@ -88,10 +92,10 @@ def return_recommended_products(profileid, category_page, klik_events):
                                 where lower(segment)=%s and lower(gender)=%s and lower(category)=%s;"""
             prodids = return_selection(prodids_query, (user_segment, user_gender, category_page,))
     else:
-        if klikevents:
-            gender_category_based_algorithm(prodids, klik_events, category_page)
+        if klik_events:
+            prodids = gender_category_based_algorithm(klik_events, category_page)
         else:
-            simple_algorithm(prodids, category_page)
+            prodids = simple_algorithm(category_page)
     return prodids
 
-print(return_recommended_products('5a393d68ed295900010384ca', 'gezond & verzorging', []))
+#print(return_recommended_products('5a97a846af47360001d62ee2', 'gezond & verzorging', []))
