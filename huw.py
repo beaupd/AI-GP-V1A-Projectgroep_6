@@ -34,6 +34,8 @@ class HUWebshop(object):
     productfields = ["name", "price.selling_price", "properties.discount", "images"]
 
     recommendationtypes = {'popular':"Anderen kochten ook",'similar':"Soortgelijke producten",'combination':'Combineert goed met','behaviour':'Passend bij uw gedrag','personal':'Persoonlijk aanbevolen'}
+    
+    huidige_klik_events = []
 
     """ ..:: Initialization and Category Index Functions ::.. """
 
@@ -102,6 +104,7 @@ class HUWebshop(object):
         self.app.add_url_rule('/productdetail/<productid>/', 'productdetail', self.productdetail)
         self.app.add_url_rule('/winkelmand/', 'winkelmand', self.shoppingcart)
         self.app.add_url_rule('/categorieoverzicht/', 'categorieoverzicht', self.categoryoverview)
+        self.app.add_url_rule('/foryoupage', 'foryoupage', self.foryoupage)
         self.app.add_url_rule('/change-profile-id', 'profielid', self.changeprofileid, methods=['POST'])
         self.app.add_url_rule('/add-to-shopping-cart', 'toevoegenaanwinkelmand', self.addtoshoppingcart, methods=['POST'])
         self.app.add_url_rule('/producten/pagination-change', 'aantalperpaginaaanpassen', self.changepaginationcount, methods=['POST'])
@@ -220,19 +223,19 @@ class HUWebshop(object):
         packet['shopping_cart_count'] = self.shoppingcartcount()
         if 'r_products' not in packet:
             packet['r_products'] = self.recommendations(4, list(self.recommendationtypes.keys())[4], [], [])
-            packet['r_type'] = list(self.recommendationtypes.values())[0]
-            packet['r_string'] = list(self.recommendationtypes.values())[0]
+            packet['r_type'] = list(self.recommendationtypes.values())[4]
+            packet['r_string'] = list(self.recommendationtypes.values())[4]
         return render_template(template, packet=packet)
 
     """ ..:: Recommendation Functions ::.. """
 
-    def recommendations(self, count, type_rec, shopping_list, pagecat):
+    def recommendations(self, count, type_rec, shopping_list, pagecat, huidige_klik_events=None, productid=None):
         """ This function returns the recommendations from the provided page
         and context, by sending a request to the designated recommendation
         service. At the moment, it only transmits the profile ID and the number
         of expected recommendations; to have more user information in the REST
         request, this function would have to change."""
-        resp = requests.get(self.recseraddress+"/"+session['profile_id']+"/"+str(count)+"/"+type_rec+"/"+str(shopping_list)+"/"+str(pagecat))
+        resp = requests.get(self.recseraddress+"/"+session['profile_id']+"/"+str(count)+"/"+type_rec+"/"+str(shopping_list)+"/"+str(pagecat)+"/"+str(huidige_klik_events)+"/"+str(productid))
         if resp.status_code == 200:
             recs = eval(resp.content.decode())
             queryfilter = {"_id": {"$in": recs}}
@@ -270,7 +273,7 @@ class HUWebshop(object):
             'pend': skipindex + session['items_per_page'] if session['items_per_page'] > 0 else prodcount, \
             'prevpage': pagepath+str(page-1) if (page > 1) else False, \
             'nextpage': pagepath+str(page+1) if (session['items_per_page']*page < prodcount) else False, \
-            'r_products':self.recommendations(4, list(self.recommendationtypes.keys())[0], [], nononescats), \
+            'r_products':self.recommendations(4, list(self.recommendationtypes.keys())[0], [], nononescats, self.huidige_klik_events), \
             'r_type':list(self.recommendationtypes.keys())[0],\
             'r_string':list(self.recommendationtypes.values())[0]\
             })
@@ -278,10 +281,11 @@ class HUWebshop(object):
     def productdetail(self, productid):
         """ This function renders the product detail page based on the product
         id provided. """
+        self.huidige_klik_events.append(productid)
         product = self.database.products.find_one({"_id":str(productid)})
         return self.renderpackettemplate('productdetail.html', {'product':product,\
             'prepproduct':self.prepproduct(product),\
-            'r_products':self.recommendations(4, list(self.recommendationtypes.keys())[1], [], []), \
+            'r_products':self.recommendations(4, list(self.recommendationtypes.keys())[1], [], [], self.huidige_klik_events, productid), \
             'r_type':list(self.recommendationtypes.keys())[1],\
             'r_string':list(self.recommendationtypes.values())[1]})
 
@@ -301,6 +305,10 @@ class HUWebshop(object):
         """ This subpage shows all top-level categories in its main menu. """
         return self.renderpackettemplate('categoryoverview.html')
 
+    def foryoupage(self):
+        """ This is a page specialised for the user with more recommendations combined """
+        return self.renderpackettemplate("foryoupage.html")
+
     """ ..:: Dynamic AJAX Endpoints ::.. """
 
     def changeprofileid(self):
@@ -319,6 +327,7 @@ class HUWebshop(object):
     def addtoshoppingcart(self):
         """ This function adds one object to the shopping cart. """
         productid = request.form.get('product_id')
+        self.huidige_klik_events.append(productid)
         cartids = list(map(lambda x: x[0], session['shopping_cart']))
         if productid in cartids:
             ind = cartids.index(productid)
