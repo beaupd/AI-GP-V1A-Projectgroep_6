@@ -5,7 +5,7 @@ def conrdb():
     try:
         connectionRDB = psycopg2.connect(
             user='postgres',
-            password='<Password>',
+            password='Nguyen1996',
             host='localhost',
             database='postgres'
         )
