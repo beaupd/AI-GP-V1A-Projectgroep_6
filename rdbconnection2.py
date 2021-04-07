@@ -1,13 +1,17 @@
 # studentnr.: 1778287
 import psycopg2
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 def conrdb():
     try:
         connectionRDB = psycopg2.connect(
             user='postgres',
-            password='admin',
+            password=os.getenv('RDB_PASS'),
             host='localhost',
-            database='documentStore'
+            database='DocumentStore'
         )
         cursor = connectionRDB.cursor()
         return connectionRDB, cursor
