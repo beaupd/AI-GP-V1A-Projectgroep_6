@@ -8,6 +8,7 @@ from collections import Counter
 import ast
 import personalrecommendation as personalrec
 import pactum as pactum
+import popular_return_recoms as popularrec
 
 
 app = Flask(__name__)
@@ -63,35 +64,10 @@ class Recom(Resource):
             cat = pagecat[0].replace("-", " ")
             cat = cat.replace(" en ", " & ")
             cat = cat.replace("make up", "make-up")
-            user_segment_query = """select lower(segment) from profile where profile_id=%s"""
-            user_segment = ReturnSelectExecution(user_segment_query, (profileid,))
-            user_gender_query = """
-            select array(select ARRAY[lower(gender), count(*)::varchar] from product
-                         natural join(select product_id from orders
-                         natural join(select session_id, segment from sessions
-                         natural join(select * from buids
-                         natural join profile
-                         where profile_id=%s) as _id) as __id) as ___id
-                         group by lower(gender)
-                         order by lower(gender));
-            """
-            user_gender_freq_list = ReturnSelectExecution(user_gender_query, (profileid,))
-            highest_freq = 0
-            user_gender = ''
-            for gender_freq in user_gender_freq_list:
-                freq = int(gender_freq[1])
-                if freq > highest_freq:
-                    highest_freq = freq
-                    user_gender = gender_freq[0]
+            huidige_klik_events = ast.literal_eval(huidige_klik_events)
             
-            popular_query = """
-            select array[product_id1, product_id2, product_id3, product_id4] from popular
-            where lower(segment)=%s
-            and lower(gender)=%s
-            and lower(category)=%s;
-            """
-            print(huidige_klik_events)
-            prodids = ReturnSelectExecution(popular_query, (user_segment, user_gender, cat,))
+            prodids = popularrec.return_recommended_products(profileid, cat, huidige_klik_events)
+            prodids = [niet_leeg_element for niet_leeg_element in prodids if niet_leeg_element]
             
         elif type_rec == "similar":
             pact = pactum.Pactum(personalrec.rdbcon)
