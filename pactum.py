@@ -17,6 +17,25 @@ class Pactum:
         else:
             return None
 
+    def get_all_from_list(self, products):
+        if len(products) > 0:
+            cur = self.conn.cursor()
+            query = ""
+            for i, p in enumerate(products):
+                if i == 0:
+                    query = f"SELECT * FROM equals WHERE '{p}'=ANY(products)"
+                elif i == len(products):
+                    query += f"OR '{p}'=ANY(products);"
+                else:
+                    query += f"OR '{p}'=ANY(products)"
+            cur.execute(query)
+            rows = cur.fetchall()
+            found_list = list(filter(lambda p: p not in products, [item for sublist in [c[2] for c in rows] for item in sublist]))# lijst van alle gevonden producten met het gegeven product id eruit gefilterd
+            # products = found_list
+            return found_list
+        else:
+            return None
+
     def setup_recommendation(self):
         self.create_table()
         self.populate_table()
@@ -81,4 +100,7 @@ if __name__ == "__main__":
     # p.populate_table()
     # res = p.get_n_recommended("01001-jetblack", 3)
     # print(res)
-    p.setup_recommendation()
+    # p.setup_recommendation()
+    x = p.get_all_from_list(["01001-chalkwhite", "02045", "04001-chestnut"])
+    y = p.recommend_products("02045")
+    print(y)
