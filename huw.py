@@ -310,7 +310,7 @@ class HUWebshop(object):
         return self.renderpackettemplate("foryoupage.html", {
             'r_products':self.recommendations(4, list(self.recommendationtypes.keys())[4], [], []),\
             'r_type':list(self.recommendationtypes.values())[4],\
-            'r_string':list(self.recommendationtypes.values())[4]
+            'r_string':list(self.recommendationtypes.values())[4],\
         })
 
     """ ..:: Dynamic AJAX Endpoints ::.. """
