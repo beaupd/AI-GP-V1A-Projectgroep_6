@@ -60,7 +60,9 @@ Steekproef met verzameling 2 en 4 CHECK!
 Steekproef met verzameling 3 en 5 CHECK!
 ``` 
 ### _Similar_
-Als het volgende geprint wordt, werjt get algoritme
+run pactum_validation.py
+
+Als het volgende geprint wordt, werkt het algoritme:
 ```python
 +------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 |product_id  |naam                                                                  |brand     |gender    |category            |sub_category
