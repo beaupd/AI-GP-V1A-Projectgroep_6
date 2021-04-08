@@ -11,7 +11,8 @@ def conrdb():
             user='postgres',
             password=os.getenv('RDB_PASS'),
             host='localhost',
-            database='DocumentStore'
+            database='DocumentStore',
+            port=os.getenv('RDB_PORT')
         )
         cursor = connectionRDB.cursor()
         return connectionRDB, cursor
