@@ -251,7 +251,7 @@ def main():
         print("Steekproef met verzameling 1 CHECK!")
 
         test_verzameling2_4()
-        print("Steekproef met verzameling 2 en 4 CHECK!")
+        print("Steekproef met verzameling 2 en 4CHECK!")
 
         test_verzameling3_5()
         print("Steekproef met verzameling 3 en 5 CHECK!")
