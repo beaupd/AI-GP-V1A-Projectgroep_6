@@ -62,6 +62,20 @@ Steekproef met verzameling 3 en 5 CHECK!
 ### _Similar_
 run pactum_validation.py
 
+Deze recommendation word gebruikt voor opdracht 1 van de verplichte validaties.
+In de volgende tabel staat de uitkomst van "23866": 
+```python
++------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+|product_id  |naam                                                                  |brand     |gender    |category            |sub_category      
++------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+|1714        |Neutral Vloeibaar Kleur Parfumvrij Wasmiddel 1425 ml                  |Neutral   |Gezin     |Huishouden          |Wassen en schoonmaken
+|20339       |Neutral Wasmiddel Vloeibaar Zwart & Donker Parfumvrij 1000 ml         |Neutral   |Gezin     |Huishouden          |Wassen en schoonmaken
+|27337       |Neutral Parfumvrij Waspoeder 1,188 g                                  |Neutral   |Gezin     |Huishouden          |Wassen en schoonmaken
+|23889       |Neutral Wasmiddel  Waspoeder Parfumvrij Wit 1188 gr                   |Neutral   |Gezin     |Huishouden          |Wassen en schoonmaken
++------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+Verplichte steekproef is geslaagd!
+```
+
 Als het volgende geprint wordt, werkt het algoritme:
 ```python
 +------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
