@@ -44,7 +44,10 @@ voor de recommendations waarbij gebruik wordt gemaakt van de gender_category bas
 Voor elke verzameling wordt gekeken of de recommendations die gegeven worden overeenkomen met
 de verwachte recommendations die we zouden moeten krijgen met de meegegeven input.
 """
-from popular_return_recoms import return_recommended_products
+from popular_return_recoms import return_recommended_products, return_selection
+
+select_product_kenmerken = """select array(select array[product_id, naam, brand, gender, category] from product
+                            where product_id=ANY(%s::varchar[]));"""
 
 #  ________________________________________________________________________________________________
 # (_________________________________ VERPLICHTE STEEKPROEVEN ______________________________________)
@@ -64,8 +67,16 @@ def test_verplichte_steekproef():
         ("5a0d02e3a56ac6edb4c0ad5a", ['1475', '151616', '152264', '1541']),
         ("5a7ce5090bce0f000198fcf5", ['43910', None, None, None])
     ]
+
     for case in cases:
         prodids = return_recommended_products(case[0], 'gezond & verzorging', [])
+        print(case[0])
+        print("+" + "-"*120 + "+")
+        print("|{:<12}|{:<70}|{:<10}|{:<10}|{:<10}".format("product_id", "naam", "brand", "gender", "category"))
+        print("+" + "-"*120 + "+")
+        for p in return_selection(select_product_kenmerken, (prodids,)):
+            print("|{:<12}|{:<70}|{:<10}|{:<10}|{:<10}".format(p[0] if p[0] else 'None', p[1] if p[1] else 'None', p[2] if p[2] else 'None', p[3] if p[3] else 'None', p[4] if p[4] else 'None'))
+        print()
         assert prodids == case[1], f"De input {case[0]} geeft niet de juiste output {prodids}. De verwachte output is {cases[1]}"
 
 
@@ -143,14 +154,36 @@ def test_verzameling1():
         (("59dce40fa56ac6edb4c37f56", "wonen & vrije tijd", []), ["38597", "38678-petunia", "38960-blauw", "38960-groen"]),
         (("59dce424a56ac6edb4c3d8d6", "wonen & vrije tijd", []), ["38597", "38610", "38960-blauw", "38960-groen"])
     ]
+    
     for case in cases_male:
         prodids = return_recommended_products(case[0][0], case[0][1], case[0][2])
+        print(case[0][0])
+        print("+" + "-"*180 + "+")
+        print("|{:<20}|{:<70}|{:<30}|{:<10}|{:<10}".format("product_id", "naam", "brand", "gender", "category"))
+        print("+" + "-"*180 + "+")
+        for p in return_selection(select_product_kenmerken, (prodids,)):
+            print("|{:<20}|{:<70}|{:<30}|{:<10}|{:<10}".format(p[0] if p[0] else 'None', p[1] if p[1] else 'None', p[2] if p[2] else 'None', p[3] if p[3] else 'None', p[4] if p[4] else 'None'))
+        print("+" + "-"*180 + "+" + "\n")
         assert prodids == case[1], f"De input {case[0]} bij cases_male, geeft de verkeerde output {prodids}. Verwachte output is {case[1]}"
     for case in cases_female:
         prodids = return_recommended_products(case[0][0], case[0][1], case[0][2])
+        print(case[0][0])
+        print("+" + "-"*180 + "+")
+        print("|{:<20}|{:<70}|{:<30}|{:<10}|{:<10}".format("product_id", "naam", "brand", "gender", "category"))
+        print("+" + "-"*180 + "+")
+        for p in return_selection(select_product_kenmerken, (prodids,)):
+            print("|{:<20}|{:<70}|{:<30}|{:<10}|{:<10}".format(p[0] if p[0] else 'None', p[1] if p[1] else 'None', p[2] if p[2] else 'None', p[3] if p[3] else 'None', p[4] if p[4] else 'None'))
+        print("+" + "-"*180 + "+" + "\n")
         assert prodids == case[1], f"De input {case[0]} bij cases_female, geeft de verkeerde output {prodids}. Verwachte output is {case[1]}"
     for case in cases_unisex:
         prodids = return_recommended_products(case[0][0], case[0][1], case[0][2])
+        print(case[0][0])
+        print("+" + "-"*180 + "+")
+        print("|{:<20}|{:<70}|{:<30}|{:<10}|{:<10}".format("product_id", "naam", "brand", "gender", "category"))
+        print("+" + "-"*180 + "+")
+        for p in return_selection(select_product_kenmerken, (prodids,)):
+            print("|{:<20}|{:<70}|{:<30}|{:<10}|{:<10}".format(p[0] if p[0] else 'None', p[1] if p[1] else 'None', p[2] if p[2] else 'None', p[3] if p[3] else 'None', p[4] if p[4] else 'None'))
+        print("+" + "-"*180 + "+" + "\n")
         assert prodids == case[1], f"De input {case[0]} bij cases_unisex, geeft de verkeerde output {prodids}. Verwachte output is {case[1]}"
 
 def test_verzameling2_4():
@@ -174,6 +207,13 @@ def test_verzameling2_4():
     ]
     for case in cases:
         prodids = return_recommended_products(case[0][0], case[0][1], case[0][2])
+        print(case[0][0])
+        print("+" + "-"*180 + "+")
+        print("|{:<20}|{:<70}|{:<30}|{:<10}|{:<10}".format("product_id", "naam", "brand", "gender", "category"))
+        print("+" + "-"*180 + "+")
+        for p in return_selection(select_product_kenmerken, (prodids,)):
+            print("|{:<20}|{:<70}|{:<30}|{:<10}|{:<10}".format(p[0] if p[0] else 'None', p[1] if p[1] else 'None', p[2] if p[2] else 'None', p[3] if p[3] else 'None', p[4] if p[4] else 'None'))
+        print("+" + "-"*180 + "+" + "\n")
         assert prodids == case[1], f"De input {case[0]} geeft de verkeerde output {prodids}. Verwachte output is {case[1]}"
 
 def test_verzameling3_5():
@@ -233,28 +273,49 @@ def test_verzameling3_5():
     ]
     for case in cases_gender_verzameling1:
         prodids = return_recommended_products(case[0][0], case[0][1], case[0][2])
+        print(case[0][0])
+        print("+" + "-"*180 + "+")
+        print("|{:<20}|{:<70}|{:<30}|{:<10}|{:<10}".format("product_id", "naam", "brand", "gender", "category"))
+        print("+" + "-"*180 + "+")
+        for p in return_selection(select_product_kenmerken, (prodids,)):
+            print("|{:<20}|{:<70}|{:<30}|{:<10}|{:<10}".format(p[0] if p[0] else 'None', p[1] if p[1] else 'None', p[2] if p[2] else 'None', p[3] if p[3] else 'None', p[4] if p[4] else 'None'))
+        print("+" + "-"*180 + "+" + "\n")
         assert prodids == case[1], f"De input {case[0]} bij gender verzameling 1, geeft de verkeerde output {prodids}. Verwachte output is {case[1]}"
     for case in cases_gender_verzameling2:
         prodids = return_recommended_products(case[0][0], case[0][1], case[0][2])
+        print(case[0][0])
+        print("+" + "-"*180 + "+")
+        print("|{:<20}|{:<70}|{:<30}|{:<10}|{:<10}".format("product_id", "naam", "brand", "gender", "category"))
+        print("+" + "-"*180 + "+")
+        for p in return_selection(select_product_kenmerken, (prodids,)):
+            print("|{:<20}|{:<70}|{:<30}|{:<10}|{:<10}".format(p[0] if p[0] else 'None', p[1] if p[1] else 'None', p[2] if p[2] else 'None', p[3] if p[3] else 'None', p[4] if p[4] else 'None'))
+        print("+" + "-"*180 + "+" + "\n")
         assert prodids == case[1], f"De input {case[0]} bij gender verzameling 2, geeft de verkeerde output {prodids}. Verwachte output is {case[1]}"
     for case in cases_gender_verzameling3:
         prodids = return_recommended_products(case[0][0], case[0][1], case[0][2])
+        print(case[0][0])
+        print("+" + "-"*180 + "+")
+        print("|{:<20}|{:<70}|{:<30}|{:<10}|{:<10}".format("product_id", "naam", "brand", "gender", "category"))
+        print("+" + "-"*180 + "+")
+        for p in return_selection(select_product_kenmerken, (prodids,)):
+            print("|{:<20}|{:<70}|{:<30}|{:<10}|{:<10}".format(p[0] if p[0] else 'None', p[1] if p[1] else 'None', p[2] if p[2] else 'None', p[3] if p[3] else 'None', p[4] if p[4] else 'None'))
+        print("+" + "-"*180 + "+" + "\n")
         assert prodids == case[1], f"De input {case[0]} bij gender verzameling 3, geeft de verkeerde output {prodids}. Verwachte output is {case[1]}"
 
 
 def main():
     try:
         test_verplichte_steekproef()
-        print("Verplichte steekproef CHECK!")
+        print(">>> Verplichte steekproef CHECK! >>>\n")
 
         test_verzameling1()
-        print("Steekproef met verzameling 1 CHECK!")
+        print(">>> Steekproef met verzameling 1 CHECK! >>>\n")
 
         test_verzameling2_4()
-        print("Steekproef met verzameling 2 en 4 CHECK!")
+        print(">>> Steekproef met verzameling 2 en 4 CHECK! >>>\n")
 
         test_verzameling3_5()
-        print("Steekproef met verzameling 3 en 5 CHECK!")
+        print(">>> Steekproef met verzameling 3 en 5 CHECK! >>>\n")
     except AssertionError as ae:
         print(ae)
 

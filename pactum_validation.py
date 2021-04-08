@@ -24,7 +24,8 @@ pac = Pactum(rdbcon)
 select_product_kenmerken_query = """select array[brand, gender, category, sub_category, sub_sub_category] from product 
                                     where product_id=ANY(%s::varchar[]) 
                                     group by brand, gender, category, sub_category, sub_sub_category;"""
-
+select_product_kenmerken = """select array(select array[product_id, naam, brand, gender, category, sub_category, sub_sub_category] from product
+                                        where product_id=ANY(%s::varchar[]));"""
 
 def eigen_steekproef():
     cases_query = """select array(select product_id from product limit 20);"""
@@ -32,6 +33,13 @@ def eigen_steekproef():
     for case in cases:
         prodids = pac.get_n_recommended(case, 4)
         prodids = [x[0] for x in prodids]
+        print(case)
+        print("+" + "-"*180 + "+")
+        print("|{:<12}|{:<70}|{:<10}|{:<10}|{:<20}|{:<18}".format("product_id", "naam", "brand", "gender", "category", "sub_category", "sub_sub_category"))
+        print("+" + "-"*180 + "+")
+        for p in return_selection(select_product_kenmerken, (prodids,)):
+            print("|{:<12}|{:<70}|{:<10}|{:<10}|{:<20}|{:<18}".format(p[0], p[1], p[2], p[3], p[4], p[5], p[6]))
+        print("+" + "-"*180 + "+")
         verwachte_output = return_selection(select_product_kenmerken_query, ([case],))
         output = return_selection(select_product_kenmerken_query, (prodids,))
         _output_ = set(verwachte_output) - set(output)
@@ -41,8 +49,13 @@ def main():
     try:
         prodids = pac.get_n_recommended("23866", 4)
         prodids = [x[0] for x in prodids]
+        print("+" + "-"*180 + "+")
+        print("|{:<12}|{:<70}|{:<10}|{:<10}|{:<20}|{:<18}".format("product_id", "naam", "brand", "gender", "category", "sub_category", "sub_sub_category"))
+        print("+" + "-"*180 + "+")
+        for product in return_selection(select_product_kenmerken, (prodids,)):
+            print("|{:<12}|{:<70}|{:<10}|{:<10}|{:<20}|{:<18}".format(product[0], product[1], product[2], product[3], product[4], product[5], product[6]))
         assert return_selection(select_product_kenmerken_query, (["23866"],)) == return_selection(select_product_kenmerken_query, (prodids,)), f"De input geeft niet de verwachte output."
-
+        print("+" + "-"*180 + "+")
         print("Verplichte steekproef is geslaagd!")
 
         eigen_steekproef()

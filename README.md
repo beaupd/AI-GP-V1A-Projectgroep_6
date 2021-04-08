@@ -54,10 +54,14 @@ run popular_validation.py
 
 Als hetvolgende geprint wordt, werkt het algoritme:
 ```python
-Verplichte steekproef CHECK!
-Steekproef met verzameling 1 CHECK!
-Steekproef met verzameling 2 en 4 CHECK!
-Steekproef met verzameling 3 en 5 CHECK!
+'...'
+>>> Verplichte steekproef CHECK! >>>
+'...'
+>>> Steekproef met verzameling 1 CHECK! >>>
+'...'
+>>> Steekproef met verzameling 2 en 4 CHECK! >>>
+'...'
+>>> Steekproef met verzameling 3 en 5 CHECK! >>>
 ``` 
 ### _Similar_
 
