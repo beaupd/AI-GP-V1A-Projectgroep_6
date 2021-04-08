@@ -341,7 +341,7 @@ END $$;
 
 Maar wat nou als een user geen huidige klik events heeft? 
 
-Omdat er voor deze mogelijkheid geen relevante user informatie is, wordt gebruik gemaakt van de [_simple recommendation_](user_story_3/readme.md). Als een user dan op een categoriepagina klikt, worden de meest verkochte producten in die categorie getoond.
+Omdat er voor deze mogelijkheid geen relevante user informatie is, wordt gebruik gemaakt van de [_simple recommendation_](https://github.com/beaupd/AI-GP-V1A-Projectgroep_6/blob/main/user_story_3/readme.md). Als een user dan op een categoriepagina klikt, worden de meest verkochte producten in die categorie getoond.
 
 # Hoe werkt de recommendation?
 
@@ -381,4 +381,4 @@ Dus bij een **bekend** profiel met segment: **browser**, gender: **man** en cate
 
 ![](src/popular_validation_pic.PNG)
 
-Zie [_popular_validation_](popular_validation.py) voor de validatie.
+Zie [_popular_validation_](https://github.com/beaupd/AI-GP-V1A-Projectgroep_6/blob/main/user_story_4/popular/popular_validation.py) voor de validatie.
