@@ -5,23 +5,74 @@ from rdbconnection2 import conrdb
 rdbcon, rdbcur = conrdb()
 
 class Pactum:
-
+    """
+        De similar recommendation class ofwel pactum. Hierin zitten alle 
+        functies die je nodig hebt om met een instance van de class
+        similar recommendations te maken.
+    """ 
+    
     def __init__(self, conn):
+        """
+            De initiate functie deze word gecalled met een postgresql open connection
+            deze variabele word aan de instance toegewezen met "self" en zo kan elke functie
+            die self als parameter heeft de connectie gebruiken
+        """
         self.conn = conn
 
     def get_n_recommended(self, product_id, n):
-        res = self.recommend_products(product_id)
-        products = res["occurences"].most_common(n)
+        """
+            Deze functie returned met een gegeven product-id een n aantal recommendations
+        """
+        res = self.recommend_products(product_id) # vraag de response van de functie recommend_products deze returned een aantal lists in een dict
+        products = res["occurences"].most_common(n) # pak n aantal recommendations van de opgetelde lijst van de recomend_products functie
         if products:
             return products
         else:
             return None
 
+    def get_all(self, products):
+        """
+            (Deprecated)
+            Deze functie zou met een gegeven lijst alle arrays opvragen waar 
+            ze in voorkomen in de equals tabel. Deze functie werkt nog niet optimaal omdat
+            tot mijn kennis was het niet mogelijk om het in een query statement te doen
+            dus nu loopt de functie door de hele lijst wat erg onefficient is, 
+            ik heb nog geen goeie oplossing kunnen bedenken. Deze functie was voor de foryoupage bedacht 
+        """
+        if len(products) > 0:
+            cur = self.conn.cursor()
+            query = ""
+            for i, p in enumerate(products):
+                if i == 0:
+                    query = f"SELECT * FROM equals WHERE '{p}'=ANY(products)"
+                elif i == len(products):
+                    query += f"OR '{p}'=ANY(products);"
+                else:
+                    query += f"OR '{p}'=ANY(products)"
+            cur.execute(query)
+            rows = cur.fetchall()
+            found_list = list(filter(lambda p: p not in products, [item for sublist in [c[2] for c in rows] for item in sublist]))# lijst van alle gevonden producten met het gegeven product id eruit gefilterd
+            # products = found_list
+            return found_list
+        else:
+            return None
+
     def setup_recommendation(self):
+        """
+            Call allebei de functies om de omgeving voor de pactum recommendation
+            op te zetten, zodat er recommendations gemaakt kunnen worden
+        """
         self.create_table()
         self.populate_table()
 
     def recommend_products(self, product_id):
+        """
+            Deze functie zoekt met een gegeven product-id op in welke arrays deze voorkomt in de equals tabel.
+            Alle product-id's die in deze arrays voorkomen worden opgevraagd waardoor je een grote lijst gereturned krijgt.
+            Het gegeven product-id word uit de lijst gefilterd en dan word er een response gereturned in de vorm van een dict,
+            in deze dict zitten de lengte van de gevonden lijst, alle product-ids van de lijst, en alle product-ids opgeteld 
+            en gesorteerd op frequente
+        """
         cur = self.conn.cursor()
         cur.execute(f"SELECT * FROM equals WHERE '{product_id}'=ANY(products)") # kijken waar de gegeven product_id voorkomt in de array
         rows = cur.fetchall()
@@ -38,7 +89,13 @@ class Pactum:
         return res
 
     def populate_table(self):
-        values = ["product_id", "brand", "gender", "category", "sub_category", "sub_sub_category"]
+        """
+            Deze functie vult aan de hand van een aantal column namen (variabele values) de equals tabel aan.
+            In deze tabel staan alle product-id's die dezelfde waarde hebben bij een specificatie in een array.
+            Op een row heb je een column de specificatie key met de waarde die de producten delen en een column 
+            met een array van alle product-ids die die waarde delen.
+        """
+        values = ["product_id", "brand", "gender", "category", "sub_category", "sub_sub_category"] # De values van de columns
         cur = self.conn.cursor()
         cur.execute(f"SELECT {', '.join(values)} from product")
         rows = cur.fetchall()
@@ -62,6 +119,9 @@ class Pactum:
         cur.close()
 
     def create_table(self):
+        """
+            De functie om de equals tabel aan te maken.
+        """
         cur = self.conn.cursor()
         cur.execute("DROP TABLE IF EXISTS equals CASCADE")
         cur.execute("""
@@ -81,4 +141,7 @@ if __name__ == "__main__":
     # p.populate_table()
     # res = p.get_n_recommended("01001-jetblack", 3)
     # print(res)
-    p.setup_recommendation()
+    # p.setup_recommendation()
+    x = p.get_all_from_list(["01001-chalkwhite", "02045", "04001-chestnut"])
+    y = p.recommend_products("02045")
+    print(y)

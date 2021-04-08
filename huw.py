@@ -10,6 +10,7 @@ from bson.objectid import ObjectId
 app = Flask(__name__)
 app.secret_key = os.urandom(16)
 
+
 class HUWebshop(object):
     """ This class combines all logic behind the HU Example Webshop project. 
     Note that all rendering is performed within the templates themselves."""
@@ -307,7 +308,13 @@ class HUWebshop(object):
 
     def foryoupage(self):
         """ This is a page specialised for the user with more recommendations combined """
-        return self.renderpackettemplate("foryoupage.html")
+        return self.renderpackettemplate("foryoupage.html", {
+            'r_products':self.recommendations(4, list(self.recommendationtypes.keys())[4], [], []),\
+            'r_type':list(self.recommendationtypes.values())[4],\
+            'r_string':list(self.recommendationtypes.values())[4],\
+            'r_top_pactum':self.recommendations(4, list(self.recommendationtypes.keys())[3], [], [], self.huidige_klik_events)
+            #'r_top_pactum':list(counted_list.most_common(4))
+        })
 
     """ ..:: Dynamic AJAX Endpoints ::.. """
 

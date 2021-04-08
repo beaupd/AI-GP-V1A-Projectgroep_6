@@ -102,6 +102,21 @@
 					</div>
 				{% endfor %}
 			</div>
+			<!-- {% if packet.r_products %}
+			<h4>{{ packet.r_string }}</h4>
+			{% endif %}
+			<div id="recommendedproducts">
+				{% for product in packet.r_products %}
+					<div class="productpageblock hublueborder">
+						<a href="/productdetail/{{ product.id }}">
+							<div class="productname">{{ product.name }}</div>
+							<div class="productprice">{{ product.price }}</div>
+							<div class="productdiscount">{{ product.discount }}</div>
+						</a>
+						<a href="#" function="add-to-shopping-cart" class="recommended-addtocart button hured" productid="{{ product.id }}">In winkelmand</a>
+					</div>
+				{% endfor %}
+			</div> -->
 			{% endblock %}
 		</div>
 		{% block footer %}
