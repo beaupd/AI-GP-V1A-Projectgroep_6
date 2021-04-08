@@ -20,7 +20,7 @@ def getSessionsBought(session_id):
     :param session_id: str van session ID
     :return: Een lijst met producten die gekocht zijn door de gegeven session
     """
-    query = "SELECT array(SELECT product_id FROM orders WHERE session_id = %s)"
+    query = "SELECT array(SELECT product_id FROM orders WHERE session_id = %s GROUP BY product_id ORDER BY product_id)"
     rdbcur.execute(query, (session_id,))
     return rdbcur.fetchall()[0][0]
 
@@ -57,8 +57,7 @@ def getSessionsBoughtProduct(product_id):
 def getSessionFrequency(product_ids, gebruikerID):
     """
     :param product_ids: lijst met product-ids
-    :param gebruikerID: str van profile_id
-    :return: 4 meest overlappende sessions van de gegeven producten
+    :return: 12 meest overlappende sessions van de gegeven producten
     """
 
     if type(product_ids) != list:
@@ -84,7 +83,7 @@ def getSessionFrequency(product_ids, gebruikerID):
 
     # Return de frequency van sessions die het meest voorkomen in alle producten
     frequency = Counter(sessions)
-    frequency = frequency.most_common(4)
+    frequency = frequency.most_common(12)
     session_recommendations = []
     for session in frequency:
         session_recommendations.append(session[0])
@@ -93,21 +92,23 @@ def getSessionFrequency(product_ids, gebruikerID):
 
 def getProductFrequency(session_ids):
     """
-    :param session_ids: een lijst met session IDs
+    :param session_ids: lijst met session IDs
+    :param gebruikerID: str
     :return: Een lijst van 4 producten die het meeste voorkomen in de gegeven session_ids
     """
     if type(session_ids) != list:
-        print("Error! Input isn't a list")
+        print("Error! SessionIDs isn't a list")
         return None
     boughtProducts = []
     for session_id in session_ids:
         boughtProducts.extend(getSessionsBought(session_id))
+
     frequency = Counter(boughtProducts)
-    frequency = frequency.most_common(4)
+    frequency = frequency.most_common(12)
     product_recommendations = []
     # We willen alleen de 4 producten returnen
     for product_id in frequency:
-        product_recommendations.append(product_id[0])
+        product_recommendations.append(product_id)
     return product_recommendations
 
 
@@ -122,8 +123,11 @@ def giveRecommendation(profile_id):
 
     # Doe dit alleen als de gebruiker iets heeft gekocht
     if gekochteproducten != []:
+        begin = time.time()
         bestsessions = getSessionFrequency(gekochteproducten, profile_id)
         recommendations = getProductFrequency(bestsessions)
+        end = time.time()
+        print(end - begin)
         return recommendations
     else:
         # Als de gebruiker de gebruiker niets heeft gekocht, maar wel op een product heeft geklikt
@@ -135,3 +139,6 @@ def giveRecommendation(profile_id):
         # Als de gebruiker ook geen klik gedrag heeft, dan geven we de 4 meest gekochte producten
         else:
             return getMostBoughtProducts(4)
+
+testprofiel = '5a393eceed295900010386a8'
+print(giveRecommendation(testprofiel))
