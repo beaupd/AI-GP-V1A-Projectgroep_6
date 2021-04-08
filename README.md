@@ -60,7 +60,18 @@ Steekproef met verzameling 2 en 4 CHECK!
 Steekproef met verzameling 3 en 5 CHECK!
 ``` 
 ### _Similar_
-
+Als het volgende geprint wordt, werjt get algoritme
+```python
++------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+|product_id  |naam                                                                  |brand     |gender    |category            |sub_category
++------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+|32476       |Airwick Essential Oils Berries & Spice Geurkaars 105 gr               |Airwick   |Unisex    |Wonen & vrije tijd  |Woonaccessoires
+|32483       |Airwick Essential Oils Infusion Geurkaars Orange & Festive Spice      |Airwick   |Unisex    |Wonen & vrije tijd  |Woonaccessoires
+|32474       |Airwick Essential Oils Infusion Geurkaars Apple & Cinnamon            |Airwick   |Unisex    |Wonen & vrije tijd  |Woonaccessoires
+|32480       |Airwick Essential Oils Infusion Geurkaars Apple & Cinnamon            |Airwick   |Unisex    |Wonen & vrije tijd  |Woonaccessoires
++------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+Eigen steekproef met 20 random productid's is geslaagd!
+```
 ### _Combination_
 
 ### _Personal_
