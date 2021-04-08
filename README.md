@@ -76,7 +76,7 @@ In de volgende tabel staat de uitkomst van "23866":
 Verplichte steekproef is geslaagd!
 ```
 
-Als het volgende geprint wordt, werkt het algoritme:
+Als onder aan dit word geprint, werkt het algoritme:
 ```python
 +------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 |product_id  |naam                                                                  |brand     |gender    |category            |sub_category
