@@ -1,5 +1,5 @@
 # studentnr.: 1778287
-from mdbconnection2 import conmdb
+from user_story_1.mdbconnection2 import conmdb
 from rdbconnection2 import conrdb
 from time import perf_counter
 
@@ -117,11 +117,10 @@ def sessions():
         print(f"Approximately {skip} documents have been handled in {time} second(s).")
 
 
-# start_product = perf_counter()
-# products()
-# eind_product = perf_counter()
-# print(f"Insertion of products took {eind_product - start_product} second(s).")
-# exit()
+start_product = perf_counter()
+products()
+eind_product = perf_counter()
+print(f"Insertion of products took {eind_product - start_product} second(s).")
 start_profiles = perf_counter()
 profiles()
 eind_profiles = perf_counter()
