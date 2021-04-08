@@ -54,13 +54,44 @@ run popular_validation.py
 
 Als hetvolgende geprint wordt, werkt het algoritme:
 ```python
-Verplichte steekproef CHECK!
-Steekproef met verzameling 1 CHECK!
-Steekproef met verzameling 2 en 4 CHECK!
-Steekproef met verzameling 3 en 5 CHECK!
+'...'
+>>> Verplichte steekproef CHECK! >>>
+'...'
+>>> Steekproef met verzameling 1 CHECK! >>>
+'...'
+>>> Steekproef met verzameling 2 en 4 CHECK! >>>
+'...'
+>>> Steekproef met verzameling 3 en 5 CHECK! >>>
 ``` 
 ### _Similar_
+run pactum_validation.py
 
+Deze recommendation word gebruikt voor opdracht 1 van de verplichte validaties.
+In de volgende tabel staat de uitkomst van "23866": 
+```python
++------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+|product_id  |naam                                                                  |brand     |gender    |category            |sub_category      
++------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+|1714        |Neutral Vloeibaar Kleur Parfumvrij Wasmiddel 1425 ml                  |Neutral   |Gezin     |Huishouden          |Wassen en schoonmaken
+|20339       |Neutral Wasmiddel Vloeibaar Zwart & Donker Parfumvrij 1000 ml         |Neutral   |Gezin     |Huishouden          |Wassen en schoonmaken
+|27337       |Neutral Parfumvrij Waspoeder 1,188 g                                  |Neutral   |Gezin     |Huishouden          |Wassen en schoonmaken
+|23889       |Neutral Wasmiddel  Waspoeder Parfumvrij Wit 1188 gr                   |Neutral   |Gezin     |Huishouden          |Wassen en schoonmaken
++------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+Verplichte steekproef is geslaagd!
+```
+
+Als onder aan dit word geprint, werkt het algoritme:
+```python
++------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+|product_id  |naam                                                                  |brand     |gender    |category            |sub_category
++------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+|32476       |Airwick Essential Oils Berries & Spice Geurkaars 105 gr               |Airwick   |Unisex    |Wonen & vrije tijd  |Woonaccessoires
+|32483       |Airwick Essential Oils Infusion Geurkaars Orange & Festive Spice      |Airwick   |Unisex    |Wonen & vrije tijd  |Woonaccessoires
+|32474       |Airwick Essential Oils Infusion Geurkaars Apple & Cinnamon            |Airwick   |Unisex    |Wonen & vrije tijd  |Woonaccessoires
+|32480       |Airwick Essential Oils Infusion Geurkaars Apple & Cinnamon            |Airwick   |Unisex    |Wonen & vrije tijd  |Woonaccessoires
++------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+Eigen steekproef met 20 random productid's is geslaagd!
+```
 ### _Combination_
 
 ### _Personal_
