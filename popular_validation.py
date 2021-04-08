@@ -19,51 +19,30 @@ vrouwen producten en unisex producten. Voor deze verzameling worden elk 4 profie
 Voor de verzamelingen 2,3,4 en 5 soorten users zijn 4 profielen aangesteld.
 Daarnaast wordt er gekeken voor elk profiel naar 
 de categoriepagina's: gezond & verzorging, wonen & vrije tijd.
-Verder wordt voor de verzamelingen 2,3,4 en 5 gebruik gemaakt van drie mogelijke gender verhoudingen 
+Verder wordt voor de verzamelingen 3 en 5 gebruik gemaakt van drie mogelijke gender verhoudingen 
 qua producten: (1) man:2, vrouw:1, unisex:1, (2) man:1, vrouw:2, unisex:1 en 
 (3) man:1, vrouw:1, unisex: 2. 
 Deze dienen als de huidige klik events.
 
 ||------------------------------------- Verzameling 1 ------------------------------------------||
-Voor elk gender in verzameling 1 loop
-    Voor elke categorie in verzameling categorieën loop
-        Vraag om recommendations op basis van het profiel en de categorie
-        Voor elk product in recommendations loop
-            Als product gender overeenkomt met gender in verzameling, 1
-            Anders 0
+Bij verzameling 1 wordt er gewerkt met het popular algoritme van begin tot eind en wordt
+dus gekeken naar het segment en gender kenmerk van een gebruiker. Op basis hiervan wordt gekeken
+welke productid's passen bij deze kenmerken in combinatie met de categoriepagina waarop een 
+user zich bevindt.
 
 ||---------------------------------- Verzameling 2 en 4 ----------------------------------------||
-Voor elke profiel in verzameling loop
-    Voor elke verzameling producten (1/2/3) loop
-        Vraag om recommendations op basis van het profiel, categorie en verzameling producten
-        select genders van recommendations
-        select categories van recommendations
-        Als productverzameling 1 dan
-            Als product genders overeenkomen met gender 'man', 1
-            Anders 0
-        Als productverzameling 2 dan
-            Als product genders overeenkomen met gender 'vrouw', 1
-            Anders 0
-        Anders
-            Als product genders overeenkomen met gender 'unisex', 1
-            Anders 0
+Bij verzameling 2 en 4 wordt allebei uitgegaan van profielen zonder huidige events en wordt in
+eerste instantie alleen de meest verkochte producten per categoriepagina getoond. En wordt dus
+gebruik gemaakt van het simple algoritme.
 
 ||---------------------------------- Verzameling 3 en 5 ---------------------------------------||
-Voor elke profiel in verzameling loop
-    Voor elke categorie in verzameling categorieën loop
-        Voor elke verzameling producten (1/2/3) loop
-            Vraag om recommendations op basis van het profiel, categorie en verzameling producten
-            select genders van recommendations
-            select categories van recommendations
-            Als productverzameling 1 dan
-                Als product genders overeenkomen met gender 'man' en catagory met categorie, 1
-                Anders 0
-            Als productverzameling 2 dan
-                Als product genders overeenkomen met gender 'vrouw' en catagory met categorie, 1
-                Anders 0
-            Anders
-                Als product genders overeenkomen met gender 'unisex' en catagory met categorie, 1
-                Anders 0
+Bij verzamelingen 3 en 5 zijn er huidige klik events van een gebruiker en wordt op basis daarvan
+bepaald wat het gender kenmerk is van de user. Dit in combinatie met de categoriepagina zorgt
+voor de recommendations waarbij gebruik wordt gemaakt van de gender_category based filter tabel.
+
+=================================================================================================
+Voor elke verzameling wordt gekeken of de recommendations die gegeven worden overeenkomen met
+de verwachte recommendations die we zouden moeten krijgen met de meegegeven input.
 """
 from popular_return_recoms import return_recommended_products
 
@@ -175,10 +154,92 @@ def test_verzameling1():
         assert prodids == case[1], f"De input {case[0]} bij cases_unisex, geeft de verkeerde output {prodids}. Verwachte output is {case[1]}"
 
 def test_verzameling2_4():
-    pass
+    cases = [
+        (("5a97a846af47360001d62ee2", "gezond & verzorging", []), ["1475", "151616", "152264", "1541"]),
+        (("5a3a41d7ed29590001045639", "gezond & verzorging", []), ["1475", "151616", "152264", "1541"]),
+        (("5a3a41e9a825610001bc4373", "gezond & verzorging", []), ["1475", "151616", "152264", "1541"]),
+        (("5a3a4204ed2959000104566c", "gezond & verzorging", []), ["1475", "151616", "152264", "1541"]),
+        (("5a97a846af47360001d62ee2", "wonen & vrije tijd", []), ["42678", "42679", "42684", "42694-blauw"]),
+        (("5a3a41d7ed29590001045639", "wonen & vrije tijd", []), ["42678", "42679", "42684", "42694-blauw"]),
+        (("5a3a41e9a825610001bc4373", "wonen & vrije tijd", []), ["42678", "42679", "42684", "42694-blauw"]),
+        (("5a3a4204ed2959000104566c", "wonen & vrije tijd", []), ["42678", "42679", "42684", "42694-blauw"]),
+        (("a", "gezond & verzorging", []), ["1475", "151616", "152264", "1541"]),
+        (("b", "gezond & verzorging", []), ["1475", "151616", "152264", "1541"]),
+        (("c", "gezond & verzorging", []), ["1475", "151616", "152264", "1541"]),
+        (("d", "gezond & verzorging", []), ["1475", "151616", "152264", "1541"]),
+        (("e", "wonen & vrije tijd", []), ["42678", "42679", "42684", "42694-blauw"]),
+        (("f", "wonen & vrije tijd", []), ["42678", "42679", "42684", "42694-blauw"]),
+        (("g", "wonen & vrije tijd", []), ["42678", "42679", "42684", "42694-blauw"]),
+        (("h", "wonen & vrije tijd", []), ["42678", "42679", "42684", "42694-blauw"])
+    ]
+    for case in cases:
+        prodids = return_recommended_products(case[0][0], case[0][1], case[0][2])
+        assert prodids == case[1], f"De input {case[0]} geeft de verkeerde output {prodids}. Verwachte output is {case[1]}"
 
 def test_verzameling3_5():
-    pass
+    cases_gender_verzameling1 = [
+        (("5a97a846af47360001d62ee2", "gezond & verzorging", ['9196', '7149', '33298', '29438']), ["1475", "151616", "152264", "1542"]),
+        (("5a3a41d7ed29590001045639", "gezond & verzorging", ['9196', '7149', '33298', '29438']), ["1475", "151616", "152264", "1542"]),
+        (("5a3a41e9a825610001bc4373", "gezond & verzorging", ['9196', '7149', '33298', '29438']), ["1475", "151616", "152264", "1542"]),
+        (("5a3a4204ed2959000104566c", "gezond & verzorging", ['9196', '7149', '33298', '29438']), ["1475", "151616", "152264", "1542"]),
+        (("5a97a846af47360001d62ee2", "wonen & vrije tijd", ['9196', '7149', '33298', '29438']), ["44436", "44649", "44650", "45202"]),
+        (("5a3a41d7ed29590001045639", "wonen & vrije tijd", ['9196', '7149', '33298', '29438']), ["44436", "44649", "44650", "45202"]),
+        (("5a3a41e9a825610001bc4373", "wonen & vrije tijd", ['9196', '7149', '33298', '29438']), ["44436", "44649", "44650", "45202"]),
+        (("5a3a4204ed2959000104566c", "wonen & vrije tijd", ['9196', '7149', '33298', '29438']), ["44436", "44649", "44650", "45202"]),
+        (("a", "gezond & verzorging", ['9196', '7149', '33298', '29438']), ["1475", "151616", "152264", "1542"]),
+        (("b", "gezond & verzorging", ['9196', '7149', '33298', '29438']), ["1475", "151616", "152264", "1542"]),
+        (("c", "gezond & verzorging", ['9196', '7149', '33298', '29438']), ["1475", "151616", "152264", "1542"]),
+        (("d", "gezond & verzorging", ['9196', '7149', '33298', '29438']), ["1475", "151616", "152264", "1542"]),
+        (("e", "wonen & vrije tijd", ['9196', '7149', '33298', '29438']), ["44436", "44649", "44650", "45202"]),
+        (("f", "wonen & vrije tijd", ['9196', '7149', '33298', '29438']), ["44436", "44649", "44650", "45202"]),
+        (("g", "wonen & vrije tijd", ['9196', '7149', '33298', '29438']), ["44436", "44649", "44650", "45202"]),
+        (("h", "wonen & vrije tijd", ['9196', '7149', '33298', '29438']), ["44436", "44649", "44650", "45202"])
+    ]
+    cases_gender_verzameling2 = [
+        (("5a97a846af47360001d62ee2", "gezond & verzorging", ['9196', '33298', '6910', '29438']), ["16791", "1680", "16800", "1681"]),
+        (("5a3a41d7ed29590001045639", "gezond & verzorging", ['9196', '33298', '6910', '29438']), ["16791", "1680", "16800", "1681"]),
+        (("5a3a41e9a825610001bc4373", "gezond & verzorging", ['9196', '33298', '6910', '29438']), ["16791", "1680", "16800", "1681"]),
+        (("5a3a4204ed2959000104566c", "gezond & verzorging", ['9196', '33298', '6910', '29438']), ["16791", "1680", "16800", "1681"]),
+        (("5a97a846af47360001d62ee2", "wonen & vrije tijd", ['9196', '33298', '6910', '29438']), ["35936", "40147", "40152", "40153"]),
+        (("5a3a41d7ed29590001045639", "wonen & vrije tijd", ['9196', '33298', '6910', '29438']), ["35936", "40147", "40152", "40153"]),
+        (("5a3a41e9a825610001bc4373", "wonen & vrije tijd", ['9196', '33298', '6910', '29438']), ["35936", "40147", "40152", "40153"]),
+        (("5a3a4204ed2959000104566c", "wonen & vrije tijd", ['9196', '33298', '6910', '29438']), ["35936", "40147", "40152", "40153"]),
+        (("a", "gezond & verzorging", ['9196', '33298', '6910', '29438']), ["16791", "1680", "16800", "1681"]),
+        (("b", "gezond & verzorging", ['9196', '33298', '6910', '29438']), ["16791", "1680", "16800", "1681"]),
+        (("c", "gezond & verzorging", ['9196', '33298', '6910', '29438']), ["16791", "1680", "16800", "1681"]),
+        (("d", "gezond & verzorging", ['9196', '33298', '6910', '29438']), ["16791", "1680", "16800", "1681"]),
+        (("e", "wonen & vrije tijd", ['9196', '33298', '6910', '29438']), ["35936", "40147", "40152", "40153"]),
+        (("f", "wonen & vrije tijd", ['9196', '33298', '6910', '29438']), ["35936", "40147", "40152", "40153"]),
+        (("g", "wonen & vrije tijd", ['9196', '33298', '6910', '29438']), ["35936", "40147", "40152", "40153"]),
+        (("h", "wonen & vrije tijd", ['9196', '33298', '6910', '29438']), ["35936", "40147", "40152", "40153"])
+    ]
+    cases_gender_verzameling3 = [
+        (("5a97a846af47360001d62ee2", "gezond & verzorging", ['9196', '33298', '29438', '22309']), ["33070", "33086", "33122", "33191"]),
+        (("5a3a41d7ed29590001045639", "gezond & verzorging", ['9196', '33298', '29438', '22309']), ["33070", "33086", "33122", "33191"]),
+        (("5a3a41e9a825610001bc4373", "gezond & verzorging", ['9196', '33298', '29438', '22309']), ["33070", "33086", "33122", "33191"]),
+        (("5a3a4204ed2959000104566c", "gezond & verzorging", ['9196', '33298', '29438', '22309']), ["33070", "33086", "33122", "33191"]),
+        (("5a97a846af47360001d62ee2", "wonen & vrije tijd", ['9196', '33298', '29438', '22309']), ["38597", "38610", "38678", "38678-lathyrus"]),
+        (("5a3a41d7ed29590001045639", "wonen & vrije tijd", ['9196', '33298', '29438', '22309']), ["38597", "38610", "38678", "38678-lathyrus"]),
+        (("5a3a41e9a825610001bc4373", "wonen & vrije tijd", ['9196', '33298', '29438', '22309']), ["38597", "38610", "38678", "38678-lathyrus"]),
+        (("5a3a4204ed2959000104566c", "wonen & vrije tijd", ['9196', '33298', '29438', '22309']), ["38597", "38610", "38678", "38678-lathyrus"]),
+        (("a", "gezond & verzorging", ['9196', '33298', '29438', '22309']), ["33070", "33086", "33122", "33191"]),
+        (("b", "gezond & verzorging", ['9196', '33298', '29438', '22309']), ["33070", "33086", "33122", "33191"]),
+        (("c", "gezond & verzorging", ['9196', '33298', '29438', '22309']), ["33070", "33086", "33122", "33191"]),
+        (("d", "gezond & verzorging", ['9196', '33298', '29438', '22309']), ["33070", "33086", "33122", "33191"]),
+        (("e", "wonen & vrije tijd", ['9196', '33298', '29438', '22309']), ["38597", "38610", "38678", "38678-lathyrus"]),
+        (("f", "wonen & vrije tijd", ['9196', '33298', '29438', '22309']), ["38597", "38610", "38678", "38678-lathyrus"]),
+        (("g", "wonen & vrije tijd", ['9196', '33298', '29438', '22309']), ["38597", "38610", "38678", "38678-lathyrus"]),
+        (("h", "wonen & vrije tijd", ['9196', '33298', '29438', '22309']), ["38597", "38610", "38678", "38678-lathyrus"])
+    ]
+    for case in cases_gender_verzameling1:
+        prodids = return_recommended_products(case[0][0], case[0][1], case[0][2])
+        assert prodids == case[1], f"De input {case[0]} bij gender verzameling 1, geeft de verkeerde output {prodids}. Verwachte output is {case[1]}"
+    for case in cases_gender_verzameling2:
+        prodids = return_recommended_products(case[0][0], case[0][1], case[0][2])
+        assert prodids == case[1], f"De input {case[0]} bij gender verzameling 2, geeft de verkeerde output {prodids}. Verwachte output is {case[1]}"
+    for case in cases_gender_verzameling3:
+        prodids = return_recommended_products(case[0][0], case[0][1], case[0][2])
+        assert prodids == case[1], f"De input {case[0]} bij gender verzameling 3, geeft de verkeerde output {prodids}. Verwachte output is {case[1]}"
 
 
 def main():
@@ -190,7 +251,7 @@ def main():
         print("Steekproef met verzameling 1 CHECK!")
 
         test_verzameling2_4()
-        print("Steekproef met verzameling 2 en 4 CHECK!")
+        print("Steekproef met verzameling 2 CHECK!")
 
         test_verzameling3_5()
         print("Steekproef met verzameling 3 en 5 CHECK!")
