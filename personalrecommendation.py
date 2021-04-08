@@ -139,6 +139,3 @@ def giveRecommendation(profile_id):
         # Als de gebruiker ook geen klik gedrag heeft, dan geven we de 4 meest gekochte producten
         else:
             return getMostBoughtProducts(4)
-
-testprofiel = '5a393eceed295900010386a8'
-print(giveRecommendation(testprofiel))
