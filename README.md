@@ -24,3 +24,43 @@ vervolgens via een procedurele programmeertaal de documents data vanuit mongodb 
 ## Install requirements.txt
 open up a command line inside project directory and type:
 ```pip install -r requirements.txt```
+
+## Opstarten van applicatie
+1. Clone de git repository
+2. Check of de gegevens in rdbconnection2.py en mdbconnect2.py gelden voor jou. Pas aan waar nodig.
+3. Run create_tables.py
+4. Run data_overzetten.py 
+5. Run popular_setup_tables.py
+6. Run pactum.py
+7. Voor unix shell gebruikers: Navigeer naar de directory waarin deze repository zich bevindt. Run huw_recommend.sh (command line: sh huw_recommend.sh). Voor Windows gebruikers: Open command prompt en navigeer naar de directory waarin deze repository zich bevindt. Run daar het volgende commando:
+```python
+set FLASK_APP=huw_recommend.py
+python -m flask run --port 5001
+
+### !! Als het werkt, zie je hetvolgende in je terminal verschijnen: * Running on http://127.0.0.1:5001/ (Press CTRL+C to quit)
+```
+8. Open nu een nieuw window en run daar het volgende:
+```python
+set FLASK_APP=huw.py
+python -m flask run
+
+### !! Als het werkt, zie je hetvolgende in je terminal verschijnen: * Running on http://127.0.0.1:5001/ (Press CTRL+C to quit)
+```
+9. Ga nu naar http://127.0.0.1:5000 waar de front-end runt.
+
+## Valideren van de algoritmes
+### popular
+run popular_validation.py
+
+Als hetvolgende geprint wordt, werkt het algoritme:
+```python
+Verplichte steekproef CHECK!
+Steekproef met verzameling 1 CHECK!
+Steekproef met verzameling 2 en 4 CHECK!
+Steekproef met verzameling 3 en 5 CHECK!
+``` 
+### similar
+
+### combination
+
+### personal
