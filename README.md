@@ -49,7 +49,7 @@ python -m flask run
 9. Ga nu naar http://127.0.0.1:5000 waar de front-end runt.
 
 ## Valideren van de algoritmes
-### popular
+### _Popular_
 run popular_validation.py
 
 Als hetvolgende geprint wordt, werkt het algoritme:
@@ -59,8 +59,8 @@ Steekproef met verzameling 1 CHECK!
 Steekproef met verzameling 2 en 4 CHECK!
 Steekproef met verzameling 3 en 5 CHECK!
 ``` 
-### similar
+### _Similar_
 
-### combination
+### _Combination_
 
-### personal
+### _Personal_
