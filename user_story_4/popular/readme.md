@@ -249,7 +249,7 @@ Een rij van popular hoort bij **meerdere** producten.
 
 ### Logistiek Datamodel
 
-![](src\gender_category_ERD.png)
+![](src/gender_category_ERD.png)
 
 ### DDL
 
@@ -337,15 +337,15 @@ END $$;
 
 ### Tabel gender_category
 
-![](src\tabel_gender_category.PNG)
+![](src/tabel_gender_category.PNG)
 
 Maar wat nou als een user geen huidige klik events heeft? 
 
-Omdat er voor deze mogelijkheid geen relevante user informatie is, wordt gebruik gemaakt van de [_simple recommendation_](user_story_3\readme.md). Als een user dan op een categoriepagina klikt, worden de meest verkochte producten in die categorie getoond.
+Omdat er voor deze mogelijkheid geen relevante user informatie is, wordt gebruik gemaakt van de [_simple recommendation_](user_story_3/readme.md). Als een user dan op een categoriepagina klikt, worden de meest verkochte producten in die categorie getoond.
 
 # Hoe werkt de recommendation?
 
-![](src\popularRecommendation_FLOWCHART3.png)
+![](src/popularRecommendation_FLOWCHART3.png)
 
 # Validatie Algoritme
 
@@ -379,6 +379,6 @@ Hieruit kwam dat alle recommendations logistiek en technisch gezien overeenkomen
 
 Dus bij een **bekend** profiel met segment: **browser**, gender: **man** en categoriepagina: **gezond & verzorging** werd producten aanbevolen die vallen onder gender: man en category: gezond & verzorging en eerder gekocht zijn door mensen met het segment browser. En werd bij een **onbekend** profiel **zonder huidige klik events** op de categoriepagina: **wonen & vrije tijd** producten aanbevolen die vallen onder category: wonen & vrije tijd en het meest gekocht zijn. Daarnaast werd bij een **bekend** profiel **zonder orders** en **met huidige klik events**, waarbij het meest gebruikte gender: **vrouw** is op de categoriepagina: **wonen & vrije tijd**, producten aangeboden die vallen onder het gender vrouw en categorie wonen & vrije tijd. 
 
-![](src\popular_validation_pic.PNG)
+![](src/popular_validation_pic.PNG)
 
-Zie [_popular_validation.py_](user_story_4/popular/popular_validation.py) voor de validatie.
+Zie [_popular_validation_](popular_validation.py) voor de validatie.
