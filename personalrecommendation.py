@@ -107,7 +107,7 @@ def getProductFrequency(session_ids):
     product_recommendations = []
     # We willen alleen de 4 producten returnen
     for product_id in frequency:
-        product_recommendations.append(product_id)
+        product_recommendations.append(product_id[0])
     return product_recommendations
 
 
