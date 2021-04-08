@@ -7,7 +7,7 @@ rdbcon, rdbcur = conrdb()
 
 def getBoughtProduct(profile_id):
     """
-    :param profile_id: str
+    :param profile_id: str van profiel ID
     :return: Een lijst met producten die een profiel heeft gekocht
     """
     select_productsbought_Query = "SELECT array(SELECT product_id FROM orders, profile, sessions, buids WHERE profile.profile_id=buids.profile_id AND buids.browser_id=sessions.browser_id AND orders.session_id=sessions.session_id and buids.profile_id = %s)"
@@ -17,7 +17,7 @@ def getBoughtProduct(profile_id):
 
 def getSessionsBought(session_id):
     """
-    :param session_id: str
+    :param session_id: str van session ID
     :return: Een lijst met producten die gekocht zijn door de gegeven session
     """
     query = "SELECT array(SELECT product_id FROM orders WHERE session_id = %s)"
@@ -27,7 +27,7 @@ def getSessionsBought(session_id):
 
 def getEvents(profile_id):
     """
-    :param profile_id: str
+    :param profile_id: str van profiel ID
     :return: Een lijst met producten waar een gebruiker op heeft geklikt.
     """
     query = "SELECT array(SELECT product_id FROM events, sessions, buids WHERE buids.profile_id = %s AND buids.browser_id = sessions.browser_id AND sessions.session_id = events.session_id)"
@@ -37,7 +37,7 @@ def getEvents(profile_id):
 
 def getMostBoughtProducts(amount):
     """
-    :param amount: amount of products
+    :param amount: hoeveelheid producten die worden getoond
     :return: Een lijst met producten die het meest gekocht zijn
     """
     query = "SELECT array(SELECT product_id FROM orders GROUP BY product_id ORDER BY COUNT(*) DESC LIMIT %s)"
@@ -46,7 +46,7 @@ def getMostBoughtProducts(amount):
 
 def getSessionsBoughtProduct(product_id):
     """
-    :param product_id: str
+    :param product_id: str van product ID
     :return: Een lijst met session ID's die een gegeven product hebben gekocht.
     """
     select_sessionsbought_query = "SELECT array( SELECT session_id FROM orders WHERE product_id = %s group by session_id order by session_id)"
@@ -54,7 +54,7 @@ def getSessionsBoughtProduct(product_id):
     return rdbcur.fetchall()[0][0]
 
 
-def getSessionFrequency(product_ids, gebruikerID=None):
+def getSessionFrequency(product_ids, gebruikerID):
     """
     :param product_ids: lijst met product-ids
     :param gebruikerID: str van profile_id
@@ -70,13 +70,17 @@ def getSessionFrequency(product_ids, gebruikerID=None):
         sessions.extend(getSessionsBoughtProduct(product))
 
     # Kies niet de sessions van de gebruiker
-    if gebruikerID != None:
-        query = "select array(select session_id from sessions natural join buids where profile_id=%s group by session_id);"
-        rdbcur.execute(query, (gebruikerID,))
-        usersessions = rdbcur.fetchall()[0][0]
-        for usersession in usersessions:
-            if usersession in sessions:
-                sessions.remove(usersession)
+    query = "select array(select session_id from sessions natural join buids where profile_id=%s group by session_id);"
+    rdbcur.execute(query, (gebruikerID,))
+    usersessions = rdbcur.fetchall()[0][0]
+    for usersession in usersessions:
+        # Als een sessie van de gebruiker in de lijst zit, verwijder alle sessies.
+        if usersession in sessions:
+            try:
+                while True:
+                    sessions.remove(usersession)
+            except ValueError:
+                pass
 
     # Return de frequency van sessions die het meest voorkomen in alle producten
     frequency = Counter(sessions)
@@ -89,7 +93,7 @@ def getSessionFrequency(product_ids, gebruikerID=None):
 
 def getProductFrequency(session_ids):
     """
-    :param session_ids:
+    :param session_ids: een lijst met session IDs
     :return: Een lijst van 4 producten die het meeste voorkomen in de gegeven session_ids
     """
     if type(session_ids) != list:
@@ -103,7 +107,7 @@ def getProductFrequency(session_ids):
     product_recommendations = []
     # We willen alleen de 4 producten returnen
     for product_id in frequency:
-        product_recommendations.append(product_id[0])
+        product_recommendations.append(product_id)
     return product_recommendations
 
 
@@ -128,6 +132,6 @@ def giveRecommendation(profile_id):
             bestsessions = getSessionFrequency(bekekenproducten, profile_id)
             recommendations = getProductFrequency(bestsessions)
             return recommendations
-        # Als de gebruiker ook geen klik gedrag heeft geven we dan de 4 meest gekochte producten
+        # Als de gebruiker ook geen klik gedrag heeft, dan geven we de 4 meest gekochte producten
         else:
             return getMostBoughtProducts(4)
