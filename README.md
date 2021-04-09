@@ -95,3 +95,9 @@ Eigen steekproef met 20 random productid's is geslaagd!
 ### _Combination_
 
 ### _Personal_
+In het bestand personalrecommendation.py staan er twee functies die moeten worden getest.
+De eerste functie getSessionFrequency bepaald welke sessies het meeste lijken op de gebruiker.
+De sessies die de meeste aantal dezelfde unieke producten hebben, zijn de sessies die het meeste lijken op de gebruiker. Om dit te testen heb ik gekeken naar 4 sessies die het meest horen te lijken op de gebruiker. Ik heb gekeken naar welke producten zij hebben gekocht. Hieruit kan ik bepalen of de sessie het meeste lijkt op de gebruiker.
+
+De tweede functie getProductFrequency bepaald welke producten het meeste voorkomen in een lijst van sessies.
+Om dit te testen moeten we kijken naar alle producten die horen bij de gegeven sessies. We zullen dus kijken naar de vorige 4 sessies. We noteren dan alle producten die de vorige 4 sessies hebben gekocht. Nadat we dit hebben genoteerd, kunnen we bepalen welke producten het meeste voorkomen. Dit zijn de producten die worden gegeven als recommendations. Nadat we hebben bepaald welke producten het meeste voorkomen, kijken we naar het resultaat van de functie en kijken we of ze hetzelfde zijn. 
