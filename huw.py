@@ -92,7 +92,8 @@ class HUWebshop(object):
         # the same thing, we wish to have this class contain as much logic as
         # possible.
         self.app.before_request(self.checksession)
-        self.app.add_url_rule('/', 'index', self.renderpackettemplate)
+        #self.app.add_url_rule('/', 'index', self.renderpackettemplate)
+        self.app.add_url_rule('/', 'index', self.homepage)
         self.app.add_url_rule('/producten/', 'producten-0', self.productpage)
         self.app.add_url_rule('/producten/<cat1>/', 'producten-1', self.productpage)
         self.app.add_url_rule('/producten/<cat1>/<cat2>/', 'producten-2', self.productpage)
@@ -222,10 +223,10 @@ class HUWebshop(object):
         packet['profile_id'] = session['profile_id']
         packet['shopping_cart'] = session['shopping_cart']
         packet['shopping_cart_count'] = self.shoppingcartcount()
-        if 'r_products' not in packet:
-            packet['r_products'] = self.recommendations(4, list(self.recommendationtypes.keys())[4], [], [])
-            packet['r_type'] = list(self.recommendationtypes.values())[4]
-            packet['r_string'] = list(self.recommendationtypes.values())[4]
+        # if 'r_products' not in packet:
+        #     packet['r_products'] = self.recommendations(4, list(self.recommendationtypes.keys())[4], [], [])
+        #     packet['r_type'] = list(self.recommendationtypes.values())[4]
+        #     packet['r_string'] = list(self.recommendationtypes.values())[4]
         return render_template(template, packet=packet)
 
     """ ..:: Recommendation Functions ::.. """
@@ -314,6 +315,13 @@ class HUWebshop(object):
             'r_string':list(self.recommendationtypes.values())[4],\
             'r_top_pactum':self.recommendations(4, list(self.recommendationtypes.keys())[3], [], [], self.huidige_klik_events)
             #'r_top_pactum':list(counted_list.most_common(4))
+        })
+    
+    def homepage(self):
+        return self.renderpackettemplate("homepage.html", {
+            'r_products':self.recommendations(4, list(self.recommendationtypes.keys())[4], [], []),\
+            'r_type':list(self.recommendationtypes.values())[4],\
+            'r_string':list(self.recommendationtypes.values())[4],
         })
 
     """ ..:: Dynamic AJAX Endpoints ::.. """
